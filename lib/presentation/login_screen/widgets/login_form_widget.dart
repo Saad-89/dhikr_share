@@ -1,3 +1,4 @@
+import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -113,7 +114,14 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     //   _isLoading = false;
     // });
     // }
-    Navigator.pushReplacementNamed(context, AppRoutes.bottomNav);
+  Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        settings: RouteSettings(name: AppRoutes.bottomNav),
+        builder: (_) => const BottomNavScreen(),
+      ),
+      (route) => false,
+    );
     setState(() {
       _isLoading = false;
     });

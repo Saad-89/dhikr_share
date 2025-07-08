@@ -1,3 +1,4 @@
+import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
 import 'package:dhikr_share/routes/app_routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
     super.initState();
   }
 
-  Future<void> _signIn() async {
+  Future<void> _signUp() async {
     // if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -33,7 +34,15 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
       _errorMessage = null;
     });
 
-    Navigator.pushReplacementNamed(context, AppRoutes.mainDhikrCounter);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        settings: RouteSettings(name: AppRoutes.bottomNav),
+        builder: (_) => const BottomNavScreen(),
+      ),
+      (route) => false,
+    );
+
     setState(() {
       _isLoading = false;
     });
@@ -126,7 +135,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
           const SizedBox(height: 20),
 
           // Remember me checkbox
-         
+
           // Error message
           if (_errorMessage != null)
             Container(
@@ -149,7 +158,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: _isLoading ? null : _signIn,
+              onPressed: _isLoading ? null : _signUp,
 
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
@@ -201,8 +210,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
               const Text("Already have an account?"),
               TextButton(
                 onPressed: () {
-    Navigator.pushNamed(context, AppRoutes.loginScreen);
-                 
+                  Navigator.pushNamed(context, AppRoutes.loginScreen);
                 },
                 child: const Text('Sign In'),
               ),

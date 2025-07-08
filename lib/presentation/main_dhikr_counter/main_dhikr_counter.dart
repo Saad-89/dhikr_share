@@ -39,8 +39,10 @@ class _MainDhikrCounterState extends State<MainDhikrCounter>
   // Track gesture types to prevent unwanted navigation
   bool _isCounterTap = false;
   bool _isTabBarTap = false;
-  bool _isPhraseSelectorActive =
-      false; // NEW: Track phrase selector interactions
+  bool _isPhraseSelectorActive = false;
+
+  // Timer for phrase selector active state
+  Timer? _phraseSelectorTimer;
 
   // Sample dhikr phrases for UI demonstration
   final List<Map<String, dynamic>> _dhikrPhrases = [
@@ -126,6 +128,7 @@ class _MainDhikrCounterState extends State<MainDhikrCounter>
   @override
   void dispose() {
     _tabController.dispose();
+    _phraseSelectorTimer?.cancel(); // Cancel timer on dispose
     super.dispose();
   }
 
@@ -258,7 +261,7 @@ class _MainDhikrCounterState extends State<MainDhikrCounter>
     }
 
     // Reset flag after a short delay
-    Future.delayed(const Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       _isCounterTap = false;
     });
   }
@@ -297,7 +300,10 @@ class _MainDhikrCounterState extends State<MainDhikrCounter>
   void _onPhraseSelected(int index) async {
     if (index >= _dhikrPhrases.length) return;
 
-    // Set flag to prevent tab navigation during phrase selection
+    // Cancel any existing timer
+    _phraseSelectorTimer?.cancel();
+
+    // Only set flag briefly to prevent immediate tab navigation
     _isPhraseSelectorActive = true;
 
     setState(() {
@@ -305,9 +311,13 @@ class _MainDhikrCounterState extends State<MainDhikrCounter>
       _currentCount = (_dhikrPhrases[index]["count"] as int? ?? 0);
     });
 
-    // Reset flag after selection is complete
-    Future.delayed(const Duration(milliseconds: 300), () {
-      _isPhraseSelectorActive = false;
+    // Reset flag very quickly to allow immediate scrolling
+    _phraseSelectorTimer = Timer(const Duration(milliseconds: 50), () {
+      if (mounted) {
+        setState(() {
+          _isPhraseSelectorActive = false;
+        });
+      }
     });
   }
 
@@ -516,157 +526,109 @@ class _MainDhikrCounterState extends State<MainDhikrCounter>
       body: SafeArea(
         child: Stack(
           children: [
-            Column(
-              children: [
-                // Error banner if in offline mode
-                if (_hasError)
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(2.w),
-                    color: AppTheme.lightTheme.colorScheme.error.withOpacity(
-                      0.1,
-                    ),
-                    child: Row(
-                      children: [
-                        CustomIconWidget(
-                          iconName: 'cloud_off',
-                          color: AppTheme.lightTheme.colorScheme.error,
-                          size: 16,
-                        ),
-                        SizedBox(width: 2.w),
-                        Expanded(
-                          child: Text(
-                            'Offline Mode - Some features may be limited',
-                            style: AppTheme.lightTheme.textTheme.bodySmall
-                                ?.copyWith(
-                                  color: AppTheme.lightTheme.colorScheme.error,
-                                ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: _initializeUI,
-                          child: Text(
-                            'Retry',
-                            style: TextStyle(
-                              color: AppTheme.lightTheme.colorScheme.error,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                // // Tab Bar - Isolated from gesture detection
-                // Container(
-                //   color: AppTheme.lightTheme.colorScheme.surface,
-                //   child: TabBar(
-                //     controller: _tabController,
-                //     tabs: [
-                //       Tab(
-                //         icon: CustomIconWidget(
-                //           iconName: 'radio_button_checked',
-                //           color: AppTheme.lightTheme.colorScheme.primary,
-                //           size: 24,
-                //         ),
-                //         text: 'Counter',
-                //       ),
-                //       Tab(
-                //         icon: CustomIconWidget(
-                //           iconName: 'people',
-                //           color:
-                //               AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                //           size: 24,
-                //         ),
-                //         text: 'Friends',
-                //       ),
-                //       Tab(
-                //         icon: CustomIconWidget(
-                //           iconName: 'analytics',
-                //           color:
-                //               AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                //           size: 24,
-                //         ),
-                //         text: 'Analytics',
-                //       ),
-                //       Tab(
-                //         icon: CustomIconWidget(
-                //           iconName: 'person',
-                //           color:
-                //               AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                //           size: 24,
-                //         ),
-                //         text: 'Profile',
-                //       ),
-                //     ],
-                //     onTap: (index) {
-                //       if (!_isCounterTap && !_isPhraseSelectorActive) {
-                //         _handleTabChange(index);
-                //       }
-                //     },
-                //   ),
-                // ),
-
-                // Islamic Header
-                IslamicHeaderWidget(),
-
-                // Main Content - Protected from unwanted gesture interference
-                Expanded(
-                  child: GestureDetector(
-                    // Only detect vertical drag when not interacting with phrase selector
-                    onVerticalDragStart: (_) {
-                      if (!_isCounterTap &&
-                          !_isTabBarTap &&
-                          !_isPhraseSelectorActive) {
-                        _toggleProgressSummary();
-                      }
-                    },
-                    child: SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      child: Column(
+            RefreshIndicator(
+              color: AppTheme.lightTheme.colorScheme.primary,
+              onRefresh: () async {
+                setState(() {});
+              },
+              child: Column(
+                children: [
+                  // Error banner if in offline mode
+                  if (_hasError)
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(2.w),
+                      color: AppTheme.lightTheme.colorScheme.error.withOpacity(
+                        0.1,
+                      ),
+                      child: Row(
                         children: [
-                          SizedBox(height: 2.h),
-
-                          // Enhanced Dhikr Counter with voice features
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: _incrementCounter,
-                            onLongPress: _showCounterContextMenu,
-                            child: EnhancedDhikrCounterWidget(
-                              count: _currentCount,
-                              useArabicNumerals: _useArabicNumerals,
-                              selectedPhrase: _dhikrPhrases.isNotEmpty
-                                  ? _dhikrPhrases[_selectedPhraseIndex]
-                                  : {},
-                              isVoiceListening: _isVoiceRecognitionActive,
-                              voiceVolume: _voiceVolume,
-                              visualFeedbackEnabled: _visualFeedbackEnabled,
-                              hapticFeedbackEnabled: _hapticFeedbackEnabled,
-                              onPhraseDetected: _handleVoicePhraseDetected,
+                          CustomIconWidget(
+                            iconName: 'cloud_off',
+                            color: AppTheme.lightTheme.colorScheme.error,
+                            size: 16,
+                          ),
+                          SizedBox(width: 2.w),
+                          Expanded(
+                            child: Text(
+                              'Offline Mode - Some features may be limited',
+                              style: AppTheme.lightTheme.textTheme.bodySmall
+                                  ?.copyWith(
+                                    color:
+                                        AppTheme.lightTheme.colorScheme.error,
+                                  ),
                             ),
                           ),
+                          TextButton(
+                            onPressed: _initializeUI,
+                            child: Text(
+                              'Retry',
+                              style: TextStyle(
+                                color: AppTheme.lightTheme.colorScheme.error,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                          SizedBox(height: 4.h),
+                  // Islamic Header
+                  IslamicHeaderWidget(),
 
-                          // Dhikr Phrase Selector - FIXED: Removed AbsorbPointer to allow horizontal scrolling
-                          // Only absorb pointer when counter is being tapped, not during phrase selection
-                          AbsorbPointer(
-                            absorbing:
-                                _isCounterTap, // Only absorb during counter tap, not phrase selection
-                            child: DhikrPhraseSelectorWidget(
+                  // Main Content - Protected from unwanted gesture interference
+                  Expanded(
+                    child: GestureDetector(
+                      // Only detect vertical drag when not interacting with phrase selector
+                      onVerticalDragStart: (_) {
+                        if (!_isCounterTap &&
+                            !_isTabBarTap &&
+                            !_isPhraseSelectorActive) {
+                          _toggleProgressSummary();
+                        }
+                      },
+                      child: SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 2.h),
+
+                            // Enhanced Dhikr Counter with voice features
+                            GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: _incrementCounter,
+                              onLongPress: _showCounterContextMenu,
+                              child: EnhancedDhikrCounterWidget(
+                                count: _currentCount,
+                                useArabicNumerals: _useArabicNumerals,
+                                selectedPhrase: _dhikrPhrases.isNotEmpty
+                                    ? _dhikrPhrases[_selectedPhraseIndex]
+                                    : {},
+                                isVoiceListening: _isVoiceRecognitionActive,
+                                voiceVolume: _voiceVolume,
+                                visualFeedbackEnabled: _visualFeedbackEnabled,
+                                hapticFeedbackEnabled: _hapticFeedbackEnabled,
+                                onPhraseDetected: _handleVoicePhraseDetected,
+                              ),
+                            ),
+
+                            SizedBox(height: 4.h),
+
+                            // Dhikr Phrase Selector - Don't absorb pointer events
+                            DhikrPhraseSelectorWidget(
                               phrases: _dhikrPhrases,
                               selectedIndex: _selectedPhraseIndex,
                               onPhraseSelected: _onPhraseSelected,
                             ),
-                          ),
 
-                          SizedBox(height: 8.h),
-                        ],
+                            SizedBox(height: 8.h),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
 
             // Voice Toggle Widget (bottom right)
@@ -688,26 +650,728 @@ class _MainDhikrCounterState extends State<MainDhikrCounter>
           ],
         ),
       ),
-
-      // // Floating Action Button
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     try {
-      //       Navigator.pushNamed(context, '/settings');
-      //     } catch (e) {
-      //       debugPrint('Settings navigation error: $e');
-      //     }
-      //   },
-      //   tooltip: 'Settings',
-      //   child: CustomIconWidget(
-      //     iconName: 'settings',
-      //     color: Colors.white,
-      //     size: 28,
-      //   ),
-      // ),
     );
   }
 }
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:sizer/sizer.dart';
+// import 'dart:async';
+
+// import '../../core/app_export.dart';
+// import './widgets/dhikr_phrase_selector_widget.dart';
+// import './widgets/enhanced_dhikr_counter_widget.dart';
+// import './widgets/islamic_header_widget.dart';
+// import './widgets/progress_summary_widget.dart';
+// import './widgets/voice_toggle_widget.dart';
+
+// class MainDhikrCounter extends StatefulWidget {
+//   const MainDhikrCounter({super.key});
+
+//   @override
+//   State<MainDhikrCounter> createState() => _MainDhikrCounterState();
+// }
+
+// class _MainDhikrCounterState extends State<MainDhikrCounter>
+//     with TickerProviderStateMixin {
+//   late TabController _tabController;
+//   int _currentCount = 0;
+//   int _selectedPhraseIndex = 0;
+//   bool _isVoiceRecognitionActive = false;
+//   bool _isVoiceRecognitionInitialized = false;
+//   bool _showProgressSummary = false;
+//   final bool _useArabicNumerals = false;
+//   bool _isLoading = false;
+//   bool _hasError = false;
+//   String _errorMessage = '';
+//   double _voiceVolume = 0.0;
+//   String _voiceStatus = 'Ready';
+
+//   // Settings for voice feedback
+//   bool _visualFeedbackEnabled = true;
+//   bool _hapticFeedbackEnabled = true;
+
+//   // Track gesture types to prevent unwanted navigation
+//   bool _isCounterTap = false;
+//   bool _isTabBarTap = false;
+//   bool _isPhraseSelectorActive =
+//       false; // NEW: Track phrase selector interactions
+
+//   // Sample dhikr phrases for UI demonstration
+//   final List<Map<String, dynamic>> _dhikrPhrases = [
+//     {
+//       'id': 'default_1',
+//       'arabic': 'سُبْحَانَ اللَّهِ',
+//       'transliteration': 'Subhan Allah',
+//       'translation': 'Glory be to Allah',
+//       'count': 0,
+//       'dailyGoal': 33,
+//       'category': 'tasbih',
+//       'is_system_phrase': true,
+//     },
+//     {
+//       'id': 'default_2',
+//       'arabic': 'الْحَمْدُ لِلَّهِ',
+//       'transliteration': 'Alhamdulillah',
+//       'translation': 'Praise be to Allah',
+//       'count': 0,
+//       'dailyGoal': 33,
+//       'category': 'tahmid',
+//       'is_system_phrase': true,
+//     },
+//     {
+//       'id': 'default_3',
+//       'arabic': 'اللَّهُ أَكْبَرُ',
+//       'transliteration': 'Allahu Akbar',
+//       'translation': 'Allah is Greatest',
+//       'count': 0,
+//       'dailyGoal': 34,
+//       'category': 'takbir',
+//       'is_system_phrase': true,
+//     },
+//     {
+//       'id': 'default_4',
+//       'arabic': 'لَا إِلَهَ إِلَّا اللَّهُ',
+//       'transliteration': 'La ilaha illa Allah',
+//       'translation': 'There is no god but Allah',
+//       'count': 0,
+//       'dailyGoal': 100,
+//       'category': 'tahlil',
+//       'is_system_phrase': true,
+//     },
+//     {
+//       'id': 'default_5',
+//       'arabic': 'أَسْتَغْفِرُ اللَّهَ',
+//       'transliteration': 'Astaghfirullah',
+//       'translation': 'I seek forgiveness from Allah',
+//       'count': 0,
+//       'dailyGoal': 100,
+//       'category': 'istighfar',
+//       'is_system_phrase': true,
+//     },
+//   ];
+
+//   // Sample daily progress data for UI
+//   final List<Map<String, dynamic>> _dailyProgress = [
+//     {
+//       'date': 'Today',
+//       'totalCount': 156,
+//       'completedPhrases': 3,
+//       'timeSpent': '25 minutes',
+//       'streak': 7,
+//     },
+//   ];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _tabController = TabController(length: 4, vsync: this);
+//     _initializeUI();
+
+//     // Add listener for tab changes with debouncing
+//     _tabController.addListener(() {
+//       if (_tabController.indexIsChanging &&
+//           !_isCounterTap &&
+//           !_isPhraseSelectorActive) {
+//         _handleTabChange(_tabController.index);
+//       }
+//     });
+//   }
+
+//   @override
+//   void dispose() {
+//     _tabController.dispose();
+//     super.dispose();
+//   }
+
+//   Future<void> _initializeUI() async {
+//     // Initialize UI state
+//     setState(() {
+//       _isLoading = true;
+//     });
+
+//     // Simulate initialization delay
+//     await Future.delayed(const Duration(milliseconds: 500));
+
+//     // Set initial count from selected phrase
+//     if (_dhikrPhrases.isNotEmpty) {
+//       _currentCount = _dhikrPhrases[_selectedPhraseIndex]['count'] as int;
+//     }
+
+//     // Initialize voice recognition status
+//     _isVoiceRecognitionInitialized = true;
+//     _voiceStatus = 'Ready';
+
+//     setState(() {
+//       _isLoading = false;
+//     });
+//   }
+
+//   void _toggleVoiceRecognition() async {
+//     if (!_isVoiceRecognitionInitialized) {
+//       _showVoiceErrorDialog();
+//       return;
+//     }
+
+//     _isCounterTap = true; // Prevent tab navigation
+
+//     setState(() {
+//       _isVoiceRecognitionActive = !_isVoiceRecognitionActive;
+//     });
+
+//     if (_isVoiceRecognitionActive) {
+//       _startVoiceRecognition();
+//     } else {
+//       _stopVoiceRecognition();
+//     }
+
+//     Future.delayed(const Duration(milliseconds: 200), () {
+//       _isCounterTap = false;
+//     });
+//   }
+
+//   void _startVoiceRecognition() {
+//     setState(() {
+//       _voiceStatus = 'Listening for dhikr...';
+//     });
+
+//     // Simulate voice recognition feedback
+//     Timer.periodic(const Duration(seconds: 2), (timer) {
+//       if (!_isVoiceRecognitionActive) {
+//         timer.cancel();
+//         return;
+//       }
+
+//       setState(() {
+//         _voiceVolume =
+//             (0.3 + (0.7 * (DateTime.now().millisecond % 1000) / 1000));
+//       });
+
+//       // Simulate occasional phrase detection
+//       if (DateTime.now().second % 10 == 0) {
+//         _handleVoicePhraseDetected();
+//       }
+//     });
+//   }
+
+//   void _stopVoiceRecognition() {
+//     setState(() {
+//       _voiceStatus = 'Ready';
+//       _voiceVolume = 0.0;
+//     });
+//   }
+
+//   void _handleVoicePhraseDetected() {
+//     setState(() {
+//       _voiceStatus = 'Phrase detected!';
+//     });
+
+//     // Enhanced counter increment with voice detection tracking
+//     _incrementCounterWithVoiceDetection();
+
+//     // Reset status after brief success indication
+//     Timer(const Duration(seconds: 1), () {
+//       if (mounted && _isVoiceRecognitionActive) {
+//         setState(() {
+//           _voiceStatus = 'Listening for dhikr...';
+//         });
+//       }
+//     });
+//   }
+
+//   void _incrementCounterWithVoiceDetection() {
+//     // Set flag to prevent tab navigation
+//     _isCounterTap = true;
+
+//     setState(() {
+//       _currentCount++;
+//       if (_dhikrPhrases.isNotEmpty) {
+//         _dhikrPhrases[_selectedPhraseIndex]["count"] = _currentCount;
+//       }
+//     });
+
+//     // Reset flag after a short delay
+//     Future.delayed(const Duration(milliseconds: 200), () {
+//       _isCounterTap = false;
+//     });
+//   }
+
+//   void _incrementCounter() async {
+//     // Set flag to prevent tab navigation
+//     _isCounterTap = true;
+
+//     setState(() {
+//       _currentCount++;
+//       if (_dhikrPhrases.isNotEmpty) {
+//         _dhikrPhrases[_selectedPhraseIndex]["count"] = _currentCount;
+//       }
+//     });
+
+//     // Enhanced haptic feedback
+//     if (_hapticFeedbackEnabled) {
+//       HapticFeedback.lightImpact();
+//     }
+
+//     // Reset flag after a short delay
+//     Future.delayed(const Duration(milliseconds: 200), () {
+//       _isCounterTap = false;
+//     });
+//   }
+
+//   void _handleTabChange(int index) {
+//     // Prevent navigation during counter interactions or phrase selector interactions
+//     if (_isCounterTap || _isPhraseSelectorActive) return;
+
+//     _isTabBarTap = true;
+
+//     // Add a small delay to ensure counter tap is processed first
+//     Future.delayed(const Duration(milliseconds: 100), () {
+//       if (!_isCounterTap && !_isPhraseSelectorActive && mounted) {
+//         try {
+//           switch (index) {
+//             case 1:
+//               Navigator.pushNamed(context, '/friends-list');
+//               break;
+//             case 2:
+//               Navigator.pushNamed(context, '/analytics-dashboard');
+//               break;
+//             case 3:
+//               Navigator.pushNamed(context, '/settings');
+//               break;
+//           }
+//         } catch (e) {
+//           debugPrint('Navigation error: $e');
+//           // Reset tab to current position
+//           _tabController.animateTo(0);
+//         }
+//       }
+//       _isTabBarTap = false;
+//     });
+//   }
+
+//   void _onPhraseSelected(int index) async {
+//     if (index >= _dhikrPhrases.length) return;
+
+//     // Set flag to prevent tab navigation during phrase selection
+//     _isPhraseSelectorActive = true;
+
+//     setState(() {
+//       _selectedPhraseIndex = index;
+//       _currentCount = (_dhikrPhrases[index]["count"] as int? ?? 0);
+//     });
+
+//     // Reset flag after selection is complete
+//     Future.delayed(const Duration(milliseconds: 300), () {
+//       _isPhraseSelectorActive = false;
+//     });
+//   }
+
+//   void _toggleProgressSummary() {
+//     setState(() {
+//       _showProgressSummary = !_showProgressSummary;
+//     });
+//   }
+
+//   void _showCounterContextMenu() {
+//     showModalBottomSheet(
+//       context: context,
+//       builder: (context) => Container(
+//         padding: EdgeInsets.all(4.w),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             ListTile(
+//               leading: CustomIconWidget(
+//                 iconName: 'refresh',
+//                 color: AppTheme.lightTheme.colorScheme.primary,
+//                 size: 24,
+//               ),
+//               title: Text('Reset Counter'),
+//               onTap: () {
+//                 Navigator.pop(context);
+//                 setState(() {
+//                   _currentCount = 0;
+//                   if (_dhikrPhrases.isNotEmpty) {
+//                     _dhikrPhrases[_selectedPhraseIndex]["count"] = 0;
+//                   }
+//                 });
+//               },
+//             ),
+//             ListTile(
+//               leading: CustomIconWidget(
+//                 iconName: 'edit',
+//                 color: AppTheme.lightTheme.colorScheme.primary,
+//                 size: 24,
+//               ),
+//               title: Text('Set Custom Count'),
+//               onTap: () {
+//                 Navigator.pop(context);
+//                 _showCustomCountDialog();
+//               },
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   void _showCustomCountDialog() {
+//     final TextEditingController controller = TextEditingController();
+//     showDialog(
+//       context: context,
+//       builder: (context) => AlertDialog(
+//         title: Text('Set Custom Count'),
+//         content: TextField(
+//           controller: controller,
+//           keyboardType: TextInputType.number,
+//           decoration: InputDecoration(
+//             labelText: 'Enter count',
+//             border: OutlineInputBorder(),
+//           ),
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () => Navigator.pop(context),
+//             child: Text('Cancel'),
+//           ),
+//           ElevatedButton(
+//             onPressed: () {
+//               final count = int.tryParse(controller.text) ?? 0;
+//               setState(() {
+//                 _currentCount = count;
+//                 if (_dhikrPhrases.isNotEmpty) {
+//                   _dhikrPhrases[_selectedPhraseIndex]["count"] = count;
+//                 }
+//               });
+//               Navigator.pop(context);
+//             },
+//             child: Text('Set'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   void _hideProgressSummary() {
+//     setState(() {
+//       _showProgressSummary = false;
+//     });
+//   }
+
+//   void _showVoiceErrorDialog() {
+//     showDialog(
+//       context: context,
+//       builder: (context) => AlertDialog(
+//         title: Text('Voice Recognition Unavailable'),
+//         content: Text(
+//           'Voice recognition could not be initialized. Please check your permissions and try again.',
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () => Navigator.pop(context),
+//             child: Text('OK'),
+//           ),
+//           ElevatedButton(
+//             onPressed: () {
+//               Navigator.pop(context);
+//               setState(() {
+//                 _isVoiceRecognitionInitialized = true;
+//                 _voiceStatus = 'Ready';
+//               });
+//             },
+//             child: Text('Retry'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // Show loading state
+//     if (_isLoading) {
+//       return Scaffold(
+//         backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
+//         body: SafeArea(
+//           child: Center(
+//             child: RefreshIndicator(
+//               color: AppTheme.lightTheme.colorScheme.primary,
+//               onRefresh: () async{
+//                 setState(() {
+                  
+//                 });
+//               },
+//               child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   CircularProgressIndicator(
+//                     color: AppTheme.lightTheme.colorScheme.primary,
+//                   ),
+//                   SizedBox(height: 2.h),
+//                   Text(
+//                     'Initializing Dhikr Counter...',
+//                     style: AppTheme.lightTheme.textTheme.bodyMedium,
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     }
+
+//     // Show error state with retry option
+//     if (_hasError && _dhikrPhrases.isEmpty) {
+//       return Scaffold(
+//         backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
+//         body: SafeArea(
+//           child: Center(
+//             child: Padding(
+//               padding: EdgeInsets.all(4.w),
+//               child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   CustomIconWidget(
+//                     iconName: 'error_outline',
+//                     color: AppTheme.lightTheme.colorScheme.error,
+//                     size: 64,
+//                   ),
+//                   SizedBox(height: 2.h),
+//                   Text(
+//                     'Connection Error',
+//                     style: AppTheme.lightTheme.textTheme.titleLarge,
+//                   ),
+//                   SizedBox(height: 1.h),
+//                   Text(
+//                     _errorMessage,
+//                     textAlign: TextAlign.center,
+//                     style: AppTheme.lightTheme.textTheme.bodyMedium,
+//                   ),
+//                   SizedBox(height: 3.h),
+//                   ElevatedButton.icon(
+//                     onPressed: _initializeUI,
+//                     icon: CustomIconWidget(
+//                       iconName: 'refresh',
+//                       color: Colors.white,
+//                       size: 20,
+//                     ),
+//                     label: Text('Retry'),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     }
+
+//     // Main app UI
+//     return Scaffold(
+//       appBar: AppBar(
+//         automaticallyImplyLeading: false,
+//         backgroundColor: AppTheme.lightTheme.colorScheme.surface,
+//         title: Text(
+//           'Dhikr Dashboard',
+//           style: AppTheme.lightTheme.appBarTheme.titleTextStyle,
+//         ),
+//       ),
+//       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
+//       body: SafeArea(
+//         child: Stack(
+//           children: [
+//             Column(
+//               children: [
+//                 // Error banner if in offline mode
+//                 if (_hasError)
+//                   Container(
+//                     width: double.infinity,
+//                     padding: EdgeInsets.all(2.w),
+//                     color: AppTheme.lightTheme.colorScheme.error.withOpacity(
+//                       0.1,
+//                     ),
+//                     child: Row(
+//                       children: [
+//                         CustomIconWidget(
+//                           iconName: 'cloud_off',
+//                           color: AppTheme.lightTheme.colorScheme.error,
+//                           size: 16,
+//                         ),
+//                         SizedBox(width: 2.w),
+//                         Expanded(
+//                           child: Text(
+//                             'Offline Mode - Some features may be limited',
+//                             style: AppTheme.lightTheme.textTheme.bodySmall
+//                                 ?.copyWith(
+//                                   color: AppTheme.lightTheme.colorScheme.error,
+//                                 ),
+//                           ),
+//                         ),
+//                         TextButton(
+//                           onPressed: _initializeUI,
+//                           child: Text(
+//                             'Retry',
+//                             style: TextStyle(
+//                               color: AppTheme.lightTheme.colorScheme.error,
+//                               fontSize: 12,
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+
+//                 // // Tab Bar - Isolated from gesture detection
+//                 // Container(
+//                 //   color: AppTheme.lightTheme.colorScheme.surface,
+//                 //   child: TabBar(
+//                 //     controller: _tabController,
+//                 //     tabs: [
+//                 //       Tab(
+//                 //         icon: CustomIconWidget(
+//                 //           iconName: 'radio_button_checked',
+//                 //           color: AppTheme.lightTheme.colorScheme.primary,
+//                 //           size: 24,
+//                 //         ),
+//                 //         text: 'Counter',
+//                 //       ),
+//                 //       Tab(
+//                 //         icon: CustomIconWidget(
+//                 //           iconName: 'people',
+//                 //           color:
+//                 //               AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+//                 //           size: 24,
+//                 //         ),
+//                 //         text: 'Friends',
+//                 //       ),
+//                 //       Tab(
+//                 //         icon: CustomIconWidget(
+//                 //           iconName: 'analytics',
+//                 //           color:
+//                 //               AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+//                 //           size: 24,
+//                 //         ),
+//                 //         text: 'Analytics',
+//                 //       ),
+//                 //       Tab(
+//                 //         icon: CustomIconWidget(
+//                 //           iconName: 'person',
+//                 //           color:
+//                 //               AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+//                 //           size: 24,
+//                 //         ),
+//                 //         text: 'Profile',
+//                 //       ),
+//                 //     ],
+//                 //     onTap: (index) {
+//                 //       if (!_isCounterTap && !_isPhraseSelectorActive) {
+//                 //         _handleTabChange(index);
+//                 //       }
+//                 //     },
+//                 //   ),
+//                 // ),
+
+//                 // Islamic Header
+//                 IslamicHeaderWidget(),
+
+//                 // Main Content - Protected from unwanted gesture interference
+//                 Expanded(
+//                   child: GestureDetector(
+//                     // Only detect vertical drag when not interacting with phrase selector
+//                     onVerticalDragStart: (_) {
+//                       if (!_isCounterTap &&
+//                           !_isTabBarTap &&
+//                           !_isPhraseSelectorActive) {
+//                         _toggleProgressSummary();
+//                       }
+//                     },
+//                     child: SingleChildScrollView(
+//                       physics: AlwaysScrollableScrollPhysics(),
+//                       child: Column(
+//                         children: [
+//                           SizedBox(height: 2.h),
+
+//                           // Enhanced Dhikr Counter with voice features
+//                           GestureDetector(
+//                             behavior: HitTestBehavior.opaque,
+//                             onTap: _incrementCounter,
+//                             onLongPress: _showCounterContextMenu,
+//                             child: EnhancedDhikrCounterWidget(
+//                               count: _currentCount,
+//                               useArabicNumerals: _useArabicNumerals,
+//                               selectedPhrase: _dhikrPhrases.isNotEmpty
+//                                   ? _dhikrPhrases[_selectedPhraseIndex]
+//                                   : {},
+//                               isVoiceListening: _isVoiceRecognitionActive,
+//                               voiceVolume: _voiceVolume,
+//                               visualFeedbackEnabled: _visualFeedbackEnabled,
+//                               hapticFeedbackEnabled: _hapticFeedbackEnabled,
+//                               onPhraseDetected: _handleVoicePhraseDetected,
+//                             ),
+//                           ),
+
+//                           SizedBox(height: 4.h),
+
+//                           // Dhikr Phrase Selector - FIXED: Removed AbsorbPointer to allow horizontal scrolling
+//                           // Only absorb pointer when counter is being tapped, not during phrase selection
+//                           AbsorbPointer(
+//                             absorbing:
+//                                 _isCounterTap, // Only absorb during counter tap, not phrase selection
+//                             child: DhikrPhraseSelectorWidget(
+//                               phrases: _dhikrPhrases,
+//                               selectedIndex: _selectedPhraseIndex,
+//                               onPhraseSelected: _onPhraseSelected,
+//                             ),
+//                           ),
+
+//                           SizedBox(height: 8.h),
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+
+//             // Voice Toggle Widget (bottom right)
+//             VoiceToggleWidget(
+//               isActive: _isVoiceRecognitionActive,
+//               isInitialized: _isVoiceRecognitionInitialized,
+//               onToggle: _toggleVoiceRecognition,
+//               visualFeedbackEnabled: _visualFeedbackEnabled,
+//               hapticFeedbackEnabled: _hapticFeedbackEnabled,
+//               status: _voiceStatus,
+//             ),
+
+//             // Progress Summary Overlay - Only show when explicitly requested
+//             if (_showProgressSummary && _dailyProgress.isNotEmpty)
+//               ProgressSummaryWidget(
+//                 progressData: _dailyProgress[0],
+//                 onClose: _hideProgressSummary,
+//               ),
+//           ],
+//         ),
+//       ),
+
+//       // // Floating Action Button
+//       // floatingActionButton: FloatingActionButton(
+//       //   onPressed: () {
+//       //     try {
+//       //       Navigator.pushNamed(context, '/settings');
+//       //     } catch (e) {
+//       //       debugPrint('Settings navigation error: $e');
+//       //     }
+//       //   },
+//       //   tooltip: 'Settings',
+//       //   child: CustomIconWidget(
+//       //     iconName: 'settings',
+//       //     color: Colors.white,
+//       //     size: 28,
+//       //   ),
+//       // ),
+//     );
+//   }
+// }
+
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';

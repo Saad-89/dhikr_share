@@ -161,14 +161,14 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
         );
       } else {
         // Handle permission denied
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Location permission denied. You can set this up later in settings.',
-            ),
-            backgroundColor: AppTheme.lightTheme.colorScheme.error,
-          ),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text(
+        //       'Location permission denied. You can set this up later in settings.',
+        //     ),
+        //     backgroundColor: AppTheme.lightTheme.colorScheme.error,
+        //   ),
+        // );
       }
     } catch (e) {
       print('Error setting up location: $e');
@@ -186,7 +186,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
       });
 
       // Wait a bit to show the snackbar, then complete onboarding
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 0));
       _completeOnboarding();
     }
   }
