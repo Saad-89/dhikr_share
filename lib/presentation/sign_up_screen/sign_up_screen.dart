@@ -1,23 +1,18 @@
+import 'package:dhikr_share/presentation/sign_up_screen/widgets/sign_up_form_widget.dart';
+import 'package:dhikr_share/presentation/sign_up_screen/widgets/sign_up_logo_widget.dart';
+import 'package:dhikr_share/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
 
-import '../../core/app_export.dart';
-import '../../theme/app_theme.dart';
-import '../../services/auth_service.dart';
-import './widgets/islamic_logo_widget.dart';
-import './widgets/login_form_widget.dart';
-import './widgets/social_login_widget.dart';
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -103,13 +98,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 4.h),
 
                 // Islamic Logo
-                IslamicLogoWidget(),
+                SignUpLogoWidget(),
 
                 SizedBox(height: 6.h),
 
                 // Welcome Text
                 Text(
-                  'Welcome Back',
+                  'Welcome',
                   style: AppTheme.lightTheme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppTheme.lightTheme.colorScheme.primary,
@@ -128,76 +123,77 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 4.h),
 
                 // Login Form
-                LoginFormWidget(),
-                SizedBox(height: 4.h),
+                SignUpFormWidget(),
+                // SizedBox(height: 4.h),
 
-                // Divider with "OR"
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: AppTheme.lightTheme.dividerColor,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4.w),
-                      child: Text(
-                        'OR',
-                        style: AppTheme.lightTheme.textTheme.bodySmall
-                            ?.copyWith(
-                              color: AppTheme
-                                  .lightTheme
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: AppTheme.lightTheme.dividerColor,
-                        thickness: 1,
-                      ),
-                    ),
-                  ],
-                ),
+                // // Divider with "OR"
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: Divider(
+                //         color: AppTheme.lightTheme.dividerColor,
+                //         thickness: 1,
+                //       ),
+                //     ),
+                //     Padding(
+                //       padding: EdgeInsets.symmetric(horizontal: 4.w),
+                //       child: Text(
+                //         'OR',
+                //         style: AppTheme.lightTheme.textTheme.bodySmall
+                //             ?.copyWith(
+                //               color: AppTheme
+                //                   .lightTheme
+                //                   .colorScheme
+                //                   .onSurfaceVariant,
+                //               fontWeight: FontWeight.w500,
+                //             ),
+                //       ),
+                //     ),
+                //     Expanded(
+                //       child: Divider(
+                //         color: AppTheme.lightTheme.dividerColor,
+                //         thickness: 1,
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
-                SizedBox(height: 3.h),
+                // SizedBox(height: 3.h),
 
                 // Social Login Options
                 // SocialLoginWidget(
                 //   onGoogleLogin: () => _handleSocialLogin('Google'),
                 //   onAppleLogin: () => _handleSocialLogin('Apple'),
                 // ),
-                SizedBox(height: 6.h),
+                // SizedBox(height: 6.h),
 
-                // Registration Link
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'New user? ',
-                      style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: _navigateToRegistration,
-                      child: Text(
-                        'Join our Ummah',
-                        style: AppTheme.lightTheme.textTheme.bodyMedium
-                            ?.copyWith(
-                              color: AppTheme.lightTheme.colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                              decoration: TextDecoration.underline,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
+                // // Registration Link
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Text(
+                //       'New user? ',
+                //       style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+                //         color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                //       ),
+                //     ),
+                //     GestureDetector(
+                //       onTap: _navigateToRegistration,
+                //       child: Text(
+                //         'Join our Ummah',
+                //         style: AppTheme.lightTheme.textTheme.bodyMedium
+                //             ?.copyWith(
+                //               color: AppTheme.lightTheme.colorScheme.primary,
+                //               fontWeight: FontWeight.w600,
+                //               decoration: TextDecoration.underline,
+                //             ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
-                SizedBox(height: 2.h),
+                // SizedBox(height: 2.h),
+             
               ],
             ),
           ),

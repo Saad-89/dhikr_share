@@ -79,7 +79,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
       "hadithQuote":
           "\"Remember often the destroyer of pleasures: death.\" - Sunan At-Tirmidhi",
       "imageUrl":
-          "https://images.unsplash.com/photo-1518709268805-4e9042af2176?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3",
+          "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "primaryColor": AppTheme.warningLight,
       "accentColor": AppTheme.accentLight,
     },
@@ -93,7 +93,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
       "arabicTranslation": "And establish prayer and give zakah",
       "hadithQuote": "\"Prayer is the pillar of religion.\" - Sahih Al-Bukhari",
       "imageUrl":
-          "https://images.unsplash.com/photo-1564769625392-651b2c7d8b6b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3",
+          "https://images.unsplash.com/photo-1596125160970-6f02eeba00d3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "primaryColor": AppTheme.primaryLight,
       "accentColor": AppTheme.accentLight,
       "isPermissionPage": true,
@@ -226,6 +226,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
               },
             ),
 
+
             // Top Page Indicator
             Positioned(
               top: 2.h,
@@ -238,6 +239,8 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
             ),
 
             // Bottom Navigation Controls
+        SizedBox(height: 10.h),
+            
             Positioned(
               bottom: 4.h,
               left: 6.w,
@@ -263,7 +266,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
                   child: Text(
                     'Skip',
                     style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                      fontSize: 12.sp,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ),
@@ -271,6 +274,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
           ],
         ),
       ),
+   
     );
   }
 
@@ -282,47 +286,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Spiritual Reminder Text
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-          decoration: BoxDecoration(
-            color: AppTheme.lightTheme.colorScheme.surface.withValues(
-              alpha: 0.9,
-            ),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppTheme.lightTheme.colorScheme.outline.withValues(
-                alpha: 0.3,
-              ),
-              width: 1,
-            ),
-          ),
-          child: Column(
-            children: [
-              CustomIconWidget(
-                iconName: 'favorite',
-                color: AppTheme.accentLight,
-                size: 20,
-              ),
-              SizedBox(height: 1.h),
-              Text(
-                'Remember: Dhikr is for Allah\'s pleasure, not for showing off (Riya)',
-                textAlign: TextAlign.center,
-                style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-                  fontSize: 10.sp,
-                  fontStyle: FontStyle.italic,
-                  color: AppTheme.lightTheme.colorScheme.onSurface.withValues(
-                    alpha: 0.8,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(height: 3.h),
-
-        // Main Action Button
+       
         SizedBox(
           width: double.infinity,
           height: 6.h,
@@ -438,7 +402,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
                   Text(
                     'Previous',
                     style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       color: _onboardingData[_currentPage]["primaryColor"]
                           as Color,
                     ),
@@ -451,6 +415,7 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
       ],
     );
   }
+
 
   @override
   void dispose() {

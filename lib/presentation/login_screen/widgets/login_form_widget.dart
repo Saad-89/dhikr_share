@@ -61,7 +61,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
   // }
 
   Future<void> _signIn() async {
-    if (!_formKey.currentState!.validate()) return;
+    // if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isLoading = true;
@@ -309,6 +309,8 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               const Text("Don't have an account? "),
               TextButton(
                 onPressed: () {
+    Navigator.pushNamed(context, AppRoutes.signUpScreen);
+
                   // TODO: Navigate to sign up screen
                 },
                 child: const Text('Sign Up'),
@@ -327,3 +329,4 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     super.dispose();
   }
 }
+

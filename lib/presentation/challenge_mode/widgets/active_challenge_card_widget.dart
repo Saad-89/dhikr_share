@@ -61,9 +61,9 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                               ),
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                Colors.white.withValues(alpha: 0.9),
-                                BlendMode.overlay,
-                              ),
+  Colors.black.withOpacity(0.0), // Lower opacity for subtle overlay
+  BlendMode.overlay,
+),
                             )
                           : null,
                     ),
@@ -89,7 +89,7 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                                       ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color:
-                                        AppTheme.lightTheme.colorScheme.primary,
+                                        AppTheme.lightTheme.colorScheme.onPrimaryContainer,
                                   ),
                                 ),
                                 SizedBox(height: 0.5.h),
@@ -98,8 +98,10 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                                   style: AppTheme.lightTheme.textTheme.bodySmall
                                       ?.copyWith(
                                     color: AppTheme
-                                        .lightTheme.colorScheme.onSurface
-                                        .withValues(alpha: 0.7),
+                                        .lightTheme.colorScheme.onPrimaryContainer,
+                                    fontWeight: FontWeight.w700,
+
+                                        
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -160,6 +162,8 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                                       style: AppTheme
                                           .lightTheme.textTheme.labelMedium
                                           ?.copyWith(
+                                            color: AppTheme
+                                          .lightTheme.colorScheme.onPrimary ,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -170,7 +174,7 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                                           ?.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: AppTheme
-                                            .lightTheme.colorScheme.primary,
+                                            .lightTheme.colorScheme.onPrimaryContainer,
                                       ),
                                     ),
                                   ],
@@ -179,10 +183,10 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                                 LinearProgressIndicator(
                                   value: progress,
                                   backgroundColor: AppTheme
-                                      .lightTheme.colorScheme.primary
+                                      .lightTheme.colorScheme.onPrimaryContainer
                                       .withValues(alpha: 0.2),
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppTheme.lightTheme.colorScheme.primary,
+                                    AppTheme.lightTheme.colorScheme.onPrimaryContainer,
                                   ),
                                   minHeight: 6,
                                 ),
@@ -192,8 +196,8 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                                   style: AppTheme.lightTheme.textTheme.bodySmall
                                       ?.copyWith(
                                     color: AppTheme
-                                        .lightTheme.colorScheme.onSurface
-                                        .withValues(alpha: 0.6),
+                                        .lightTheme.colorScheme.onPrimaryContainer
+                                      
                                   ),
                                 ),
                               ],
@@ -235,6 +239,7 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: OutlinedButton.icon(
+                            
                               onPressed: () {
                                 // Navigate to main counter with challenge context
                                 Navigator.pushNamed(
@@ -250,6 +255,7 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                               label: Text("Continue"),
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 1.5.h),
+                                backgroundColor: AppTheme.lightTheme.colorScheme.onPrimary,
                               ),
                             ),
                           ),
@@ -292,7 +298,7 @@ class ActiveChallengeCardWidget extends StatelessWidget {
         children: [
           CustomIconWidget(
             iconName: icon,
-            color: AppTheme.lightTheme.colorScheme.primary,
+            color: AppTheme.lightTheme.colorScheme.onPrimaryContainer,
             size: 16,
           ),
           SizedBox(width: 1.w),
@@ -303,15 +309,14 @@ class ActiveChallengeCardWidget extends StatelessWidget {
                 Text(
                   label,
                   style: AppTheme.lightTheme.textTheme.labelSmall?.copyWith(
-                    color: AppTheme.lightTheme.colorScheme.onSurface.withValues(
-                      alpha: 0.6,
-                    ),
+                    color: AppTheme.lightTheme.colorScheme.onPrimaryContainer
                   ),
                 ),
                 Text(
                   value,
                   style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.bold,
+                  color: AppTheme.lightTheme.colorScheme.onPrimaryContainer
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),

@@ -153,7 +153,7 @@ class OnboardingPageWidget extends StatelessWidget {
           subtitle,
           textAlign: TextAlign.center,
           style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
-            fontSize: 14.sp,
+            fontSize: 16.sp,
             color: AppTheme.lightTheme.colorScheme.onSurface.withValues(
               alpha: 0.7,
             ),
@@ -185,7 +185,7 @@ class OnboardingPageWidget extends StatelessWidget {
               arabicText,
               textAlign: TextAlign.center,
               style: AppTheme.arabicTextStyle(isLight: true).copyWith(
-                fontSize: 16.sp,
+                fontSize: 18.sp,
                 color: primaryColor,
                 fontWeight: FontWeight.w500,
                 height: 1.8,
@@ -198,7 +198,7 @@ class OnboardingPageWidget extends StatelessWidget {
             arabicTranslation,
             textAlign: TextAlign.center,
             style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-              fontSize: 12.sp,
+              fontSize: 14.sp,
               fontStyle: FontStyle.italic,
               color: AppTheme.lightTheme.colorScheme.onSurface.withValues(
                 alpha: 0.8,
@@ -216,7 +216,7 @@ class OnboardingPageWidget extends StatelessWidget {
       description,
       textAlign: TextAlign.center,
       style: AppTheme.lightTheme.textTheme.bodyLarge?.copyWith(
-        fontSize: 14.sp,
+        fontSize: 16.sp,
         height: 1.6,
         color: AppTheme.lightTheme.colorScheme.onSurface.withValues(alpha: 0.9),
       ),
@@ -257,7 +257,7 @@ class OnboardingPageWidget extends StatelessWidget {
           Text(
             hadithQuote,
             style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-              fontSize: 12.sp,
+              fontSize: 14.sp,
               fontStyle: FontStyle.italic,
               height: 1.5,
               color: AppTheme.lightTheme.colorScheme.onSurface.withValues(
