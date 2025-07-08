@@ -61,7 +61,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
   // }
 
   Future<void> _signIn() async {
-    if (!_formKey.currentState!.validate()) return;
+    // if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isLoading = true;
@@ -113,7 +113,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     //   _isLoading = false;
     // });
     // }
-    Navigator.pushReplacementNamed(context, AppRoutes.mainDhikrCounter);
+    Navigator.pushReplacementNamed(context, AppRoutes.bottomNav);
     setState(() {
       _isLoading = false;
     });
@@ -310,6 +310,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               TextButton(
                 onPressed: () {
                   // TODO: Navigate to sign up screen
+                  // Navigator.pushNamed(context, '/islamic-onboarding');
                 },
                 child: const Text('Sign Up'),
               ),

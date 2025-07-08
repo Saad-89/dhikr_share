@@ -75,45 +75,44 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.15,
-    ).animate(CurvedAnimation(
-      parent: _incrementAnimationController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
+      CurvedAnimation(
+        parent: _incrementAnimationController,
+        curve: Curves.elasticOut,
+      ),
+    );
 
-    _colorAnimation = ColorTween(
-      begin: AppTheme.lightTheme.colorScheme.primary,
-      end: AppTheme.lightTheme.colorScheme.secondary,
-    ).animate(CurvedAnimation(
-      parent: _incrementAnimationController,
-      curve: Curves.easeInOut,
-    ));
+    _colorAnimation =
+        ColorTween(
+          begin: AppTheme.lightTheme.colorScheme.primary,
+          end: AppTheme.lightTheme.colorScheme.secondary,
+        ).animate(
+          CurvedAnimation(
+            parent: _incrementAnimationController,
+            curve: Curves.easeInOut,
+          ),
+        );
 
-    _listeningPulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.08,
-    ).animate(CurvedAnimation(
-      parent: _listeningAnimationController,
-      curve: Curves.easeInOut,
-    ));
+    _listeningPulseAnimation = Tween<double>(begin: 1.0, end: 1.08).animate(
+      CurvedAnimation(
+        parent: _listeningAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
 
-    _volumeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _volumeAnimationController,
-      curve: Curves.easeOut,
-    ));
+    _volumeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _volumeAnimationController,
+        curve: Curves.easeOut,
+      ),
+    );
 
-    _successAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _successAnimationController,
-      curve: Curves.bounceOut,
-    ));
+    _successAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _successAnimationController,
+        curve: Curves.bounceOut,
+      ),
+    );
 
     if (widget.isVoiceListening) {
       _listeningAnimationController.repeat(reverse: true);
@@ -216,8 +215,9 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
       ]),
       builder: (context, child) {
         final baseScale = _scaleAnimation.value;
-        final listeningScale =
-            widget.isVoiceListening ? _listeningPulseAnimation.value : 1.0;
+        final listeningScale = widget.isVoiceListening
+            ? _listeningPulseAnimation.value
+            : 1.0;
         final volumeScale = widget.isVoiceListening
             ? (1.0 + (_volumeAnimation.value * widget.voiceVolume * 0.1))
             : 1.0;
@@ -229,10 +229,12 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
             // Listening outer rings (sound sensitivity indicator)
             if (widget.isVoiceListening && widget.visualFeedbackEnabled)
               ...List.generate(3, (index) {
-                final ringScale = 1.0 +
+                final ringScale =
+                    1.0 +
                     (index + 1) * 0.15 +
                     (_volumeAnimation.value * widget.voiceVolume * 0.2);
-                final opacity = (1.0 - (index * 0.3)) *
+                final opacity =
+                    (1.0 - (index * 0.3)) *
                     (0.3 + _volumeAnimation.value * widget.voiceVolume * 0.7);
 
                 return Transform.scale(
@@ -262,8 +264,9 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.green
-                          .withValues(alpha: _successAnimation.value * 0.8),
+                      color: Colors.green.withValues(
+                        alpha: _successAnimation.value * 0.8,
+                      ),
                       width: 4,
                     ),
                   ),
@@ -271,8 +274,9 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
                     child: Icon(
                       Icons.check_circle,
                       size: 20.w,
-                      color: Colors.green
-                          .withValues(alpha: _successAnimation.value),
+                      color: Colors.green.withValues(
+                        alpha: _successAnimation.value,
+                      ),
                     ),
                   ),
                 ),
@@ -287,16 +291,21 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: widget.isVoiceListening && widget.visualFeedbackEnabled
-                      ? Color.lerp(_colorAnimation.value,
-                          AppTheme.lightTheme.colorScheme.primary, 0.8)
+                      ? Color.lerp(
+                          _colorAnimation.value,
+                          AppTheme.lightTheme.colorScheme.primary,
+                          0.8,
+                        )
                       : _colorAnimation.value,
                   boxShadow: [
                     BoxShadow(
                       color: widget.isVoiceListening
-                          ? AppTheme.lightTheme.colorScheme.primary
-                              .withValues(alpha: 0.4)
-                          : AppTheme.lightTheme.colorScheme.shadow
-                              .withValues(alpha: 0.3),
+                          ? AppTheme.lightTheme.colorScheme.primary.withValues(
+                              alpha: 0.4,
+                            )
+                          : AppTheme.lightTheme.colorScheme.shadow.withValues(
+                              alpha: 0.3,
+                            ),
                       blurRadius: widget.isVoiceListening ? 20 : 15,
                       offset: Offset(0, 8),
                       spreadRadius: widget.isVoiceListening ? 2 : 0,
@@ -310,7 +319,7 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
                     Text(
                       _formatNumber(widget.count),
                       style: GoogleFonts.inter(
-                        fontSize: 24.sp,
+                        fontSize: 26.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -325,14 +334,14 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
                               widget.selectedPhrase['dailyGoal'] as int? ?? 33;
                           final percentage = dailyGoal > 0
                               ? ((widget.count / dailyGoal) * 100)
-                                  .clamp(0.0, 100.0)
-                                  .toInt()
+                                    .clamp(0.0, 100.0)
+                                    .toInt()
                               : 0;
 
                           return Text(
                             '$percentage%',
                             style: GoogleFonts.inter(
-                              fontSize: 12.sp,
+                              fontSize: 16.sp,
                               color: Colors.white.withValues(alpha: 0.9),
                               fontWeight: FontWeight.w600,
                             ),
@@ -348,7 +357,7 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
                       Text(
                         widget.selectedPhrase['transliteration'] ?? '',
                         style: GoogleFonts.inter(
-                          fontSize: 10.sp,
+                          fontSize: 14.sp,
                           color: Colors.white.withValues(alpha: 0.8),
                           fontWeight: FontWeight.w500,
                         ),

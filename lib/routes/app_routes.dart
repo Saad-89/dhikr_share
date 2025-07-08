@@ -1,3 +1,4 @@
+import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
 import 'package:flutter/material.dart';
 import '../presentation/splash_screen/splash_screen.dart';
 import '../presentation/login_screen/login_screen.dart';
@@ -23,6 +24,7 @@ class AppRoutes {
   static const String voiceRecognitionSession = '/voice-recognition-session';
   static const String aiInsights = '/ai-insights';
   static const String challengeMode = '/challenge-mode';
+  static const String bottomNav = '/bottom-nav';
 
   static Map<String, WidgetBuilder> routes = {
     initial: (context) => const SplashScreen(),
@@ -36,6 +38,7 @@ class AppRoutes {
     voiceRecognitionSession: (context) => const VoiceRecognitionSession(),
     aiInsights: (context) => const AiInsights(),
     challengeMode: (context) => const ChallengeMode(),
+    bottomNav: (context) => const BottomNavScreen(),
     // TODO: Add your other routes here
   };
 }

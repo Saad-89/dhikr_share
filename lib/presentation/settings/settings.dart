@@ -181,20 +181,11 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: AppTheme.lightTheme.colorScheme.surface,
         title: Text(
           'Settings',
-          style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: CustomIconWidget(
-            iconName: 'arrow_back',
-            color: AppTheme.lightTheme.colorScheme.onSurface,
-            size: 24,
-          ),
+          style: AppTheme.lightTheme.appBarTheme.titleTextStyle,
         ),
       ),
       body: SingleChildScrollView(

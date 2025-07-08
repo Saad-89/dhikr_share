@@ -229,9 +229,9 @@ class _ChallengeModeState extends State<ChallengeMode>
                             challenge["title"] ?? "",
                             style: AppTheme.lightTheme.textTheme.titleLarge
                                 ?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           SizedBox(height: 1.h),
                           Row(
@@ -244,7 +244,9 @@ class _ChallengeModeState extends State<ChallengeMode>
                                 decoration: BoxDecoration(
                                   color: challenge["type"] == "group"
                                       ? AppTheme
-                                          .lightTheme.colorScheme.secondary
+                                            .lightTheme
+                                            .colorScheme
+                                            .secondary
                                       : AppTheme.lightTheme.colorScheme.primary,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -253,11 +255,13 @@ class _ChallengeModeState extends State<ChallengeMode>
                                       ? "Group"
                                       : "Solo",
                                   style: AppTheme
-                                      .lightTheme.textTheme.labelSmall
+                                      .lightTheme
+                                      .textTheme
+                                      .labelSmall
                                       ?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                 ),
                               ),
                               SizedBox(width: 2.w),
@@ -275,11 +279,13 @@ class _ChallengeModeState extends State<ChallengeMode>
                                 child: Text(
                                   challenge["difficulty"] ?? "",
                                   style: AppTheme
-                                      .lightTheme.textTheme.labelSmall
+                                      .lightTheme
+                                      .textTheme
+                                      .labelSmall
                                       ?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                 ),
                               ),
                             ],
@@ -317,7 +323,8 @@ class _ChallengeModeState extends State<ChallengeMode>
                       ),
                       SizedBox(height: 1.h),
                       LinearProgressIndicator(
-                        value: (challenge["progress"] ?? 0) /
+                        value:
+                            (challenge["progress"] ?? 0) /
                             (challenge["target"] ?? 1),
                         backgroundColor: AppTheme.lightTheme.colorScheme.primary
                             .withValues(alpha: 0.2),
@@ -387,10 +394,12 @@ class _ChallengeModeState extends State<ChallengeMode>
                                 "Hadith",
                                 style: AppTheme.lightTheme.textTheme.titleSmall
                                     ?.copyWith(
-                                  color:
-                                      AppTheme.lightTheme.colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                      color: AppTheme
+                                          .lightTheme
+                                          .colorScheme
+                                          .primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                             ],
                           ),
@@ -492,20 +501,12 @@ class _ChallengeModeState extends State<ChallengeMode>
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           "Challenge Mode",
-          style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTheme.lightTheme.appBarTheme.titleTextStyle,
         ),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: CustomIconWidget(
-            iconName: 'arrow_back',
-            color: AppTheme.lightTheme.colorScheme.onSurface,
-            size: 24,
-          ),
-        ),
+
         actions: [
           IconButton(
             onPressed: _showChallengeCreationSheet,
