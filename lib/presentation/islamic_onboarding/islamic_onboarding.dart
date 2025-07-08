@@ -294,8 +294,8 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
             onPressed: _isSettingUpLocation
                 ? null
                 : isPermissionPage
-                    ? _requestLocationPermission
-                    : _nextPage,
+                ? _requestLocationPermission
+                : _nextPage,
             style: ElevatedButton.styleFrom(
               backgroundColor:
                   _onboardingData[_currentPage]["primaryColor"] as Color,
@@ -325,12 +325,12 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
                       SizedBox(width: 2.w),
                       Text(
                         'Setting up location...',
-                        style:
-                            AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                        style: AppTheme.lightTheme.textTheme.labelLarge
+                            ?.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                       ),
                     ],
                   )
@@ -341,22 +341,22 @@ class _IslamicOnboardingState extends State<IslamicOnboarding> {
                         isPermissionPage
                             ? 'Allow Location Access'
                             : isLastPage
-                                ? 'Start Your Journey'
-                                : 'Continue',
-                        style:
-                            AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                            ? 'Start Your Journey'
+                            : 'Continue',
+                        style: AppTheme.lightTheme.textTheme.labelLarge
+                            ?.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                       ),
                       SizedBox(width: 2.w),
                       CustomIconWidget(
                         iconName: isPermissionPage
                             ? 'location_on'
                             : isLastPage
-                                ? 'mosque'
-                                : 'arrow_forward',
+                            ? 'mosque'
+                            : 'arrow_forward',
                         color: Colors.white,
                         size: 20,
                       ),

@@ -1,4 +1,5 @@
 import 'package:dhikr_share/presentation/sign_up_screen/sign_up_screen.dart';
+import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
 import 'package:flutter/material.dart';
 import '../presentation/splash_screen/splash_screen.dart';
 import '../presentation/login_screen/login_screen.dart';
@@ -25,6 +26,7 @@ class AppRoutes {
   static const String aiInsights = '/ai-insights';
   static const String challengeMode = '/challenge-mode';
   static const String signUpScreen = '/sign-up-screen';
+  static const String bottomNav = '/bottom-nav';
 
   static Map<String, WidgetBuilder> routes = {
     initial: (context) => const SplashScreen(),
@@ -40,5 +42,7 @@ class AppRoutes {
     challengeMode: (context) => const ChallengeMode(),
     signUpScreen: (context) => const SignUpScreen(),
     
+    bottomNav: (context) => const BottomNavScreen(),
+    // TODO: Add your other routes here
   };
 }

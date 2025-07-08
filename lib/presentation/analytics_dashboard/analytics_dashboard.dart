@@ -9,7 +9,8 @@ import './widgets/insight_card_widget.dart';
 import './widgets/progress_ring_widget.dart';
 
 class AnalyticsDashboard extends StatefulWidget {
-  const AnalyticsDashboard({super.key});
+  final bool? friendsAnalyticScreen;
+  const AnalyticsDashboard({super.key, this.friendsAnalyticScreen = false});
 
   @override
   State<AnalyticsDashboard> createState() => _AnalyticsDashboardState();
@@ -98,15 +99,16 @@ class _AnalyticsDashboardState extends State<AnalyticsDashboard>
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNavigation(),
+      // bottomNavigationBar: _buildBottomNavigation(),
     );
   }
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
+      automaticallyImplyLeading: widget.friendsAnalyticScreen! ? false : true,
       title: Text(
         'Analytics Dashboard',
-        style: AppTheme.lightTheme.textTheme.titleLarge,
+        style: AppTheme.lightTheme.appBarTheme.titleTextStyle,
       ),
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       elevation: 0,

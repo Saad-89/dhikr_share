@@ -113,7 +113,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     //   _isLoading = false;
     // });
     // }
-    Navigator.pushReplacementNamed(context, AppRoutes.mainDhikrCounter);
+    Navigator.pushReplacementNamed(context, AppRoutes.bottomNav);
     setState(() {
       _isLoading = false;
     });
@@ -312,6 +312,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     Navigator.pushNamed(context, AppRoutes.signUpScreen);
 
                   // TODO: Navigate to sign up screen
+                  // Navigator.pushNamed(context, '/islamic-onboarding');
                 },
                 child: const Text('Sign Up'),
               ),

@@ -273,6 +273,7 @@ class _FriendsListState extends State<FriendsList>
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Friends',
           style: AppTheme.lightTheme.appBarTheme.titleTextStyle,
@@ -347,7 +348,9 @@ class _FriendsListState extends State<FriendsList>
                             icon: CustomIconWidget(
                               iconName: 'clear',
                               color: AppTheme
-                                  .lightTheme.colorScheme.onSurfaceVariant,
+                                  .lightTheme
+                                  .colorScheme
+                                  .onSurfaceVariant,
                               size: 20,
                             ),
                           )
@@ -358,7 +361,10 @@ class _FriendsListState extends State<FriendsList>
               // Tab Bar
               TabBar(
                 controller: _tabController,
-                tabs: const [Tab(text: 'Friends'), Tab(text: 'Discover')],
+                tabs: const [
+                  Tab(text: 'Friends'),
+                  Tab(text: 'Discover'),
+                ],
               ),
             ],
           ),
