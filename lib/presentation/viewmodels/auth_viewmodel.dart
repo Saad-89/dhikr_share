@@ -2,6 +2,7 @@ import 'package:dhikr_share/core/interfaces/auth_service.dart';
 import 'package:dhikr_share/data/services/firestore_user_service.dart';
 import 'package:dhikr_share/domain/models/user_model.dart';
 import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
+import 'package:dhikr_share/presentation/login_screen/login_screen.dart';
 import 'package:dhikr_share/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -53,7 +54,6 @@ class AuthViewmodel extends ChangeNotifier {
     }
   }
 
-
   Future<void> signIn(context, email, password) async {
     _setLoading(true);
     try {
@@ -74,4 +74,21 @@ class AuthViewmodel extends ChangeNotifier {
     }
   }
 
+  void signOut(context) async {
+    _setLoading(true);
+    try {
+      await authService.signOut();
+      _setLoading(false);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.loginScreen,
+        (route) => false,
+      );
+      Fluttertoast.showToast(msg: "Sign Out SuccessFully!");
+    } catch (e) {
+      _setLoading(false);
+      print(e.toString());
+    }
+  }
 }
+

@@ -1,4 +1,6 @@
+import 'package:dhikr_share/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/app_export.dart';
@@ -146,22 +148,31 @@ class _SettingsState extends State<Settings> {
             onPressed: () => Navigator.pop(context),
             child: Text('Cancel'),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              // await _authService.signOut();
-              if (mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/login-screen',
-                  (route) => false,
-                );
+          Consumer<AuthViewmodel>(
+            builder: (context,provider,child) {
+              if (provider.isLoading) {
+                return Center(child: CircularProgressIndicator(),);
               }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.lightTheme.colorScheme.error,
-            ),
-            child: Text('Logout', style: TextStyle(color: Colors.white)),
+              return ElevatedButton(
+                onPressed: ()  {
+
+               provider.signOut(context);
+                  // Navigator.pop(context);
+                  // // await _authService.signOut();
+                  // if (mounted) {
+                  //   Navigator.pushNamedAndRemoveUntil(
+                  //     context,
+                  //     '/login-screen',
+                  //     (route) => false,
+                  //   );
+                  // }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.lightTheme.colorScheme.error,
+                ),
+                child: Text('Logout', style: TextStyle(color: Colors.white)),
+              );
+            }
           ),
         ],
       ),

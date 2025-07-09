@@ -29,4 +29,9 @@ class FirebaseAuthService implements AuthService {
     final user = cred.user!;
     return UserModel(uid: user.uid, email: user.email ?? "");
   }
+  
+  @override
+    Future<void> signOut() async{
+     await _auth.signOut();
+  }
 }

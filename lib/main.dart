@@ -1,8 +1,11 @@
 import 'package:dhikr_share/core/interfaces/auth_service.dart';
+import 'package:dhikr_share/core/interfaces/friend_service.dart';
 import 'package:dhikr_share/data/services/firebase_auth_service.dart';
+import 'package:dhikr_share/data/services/firebase_friend_service.dart';
 import 'package:dhikr_share/data/services/firestore_user_service.dart';
 import 'package:dhikr_share/firebase_options.dart';
 import 'package:dhikr_share/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:dhikr_share/presentation/viewmodels/friend_viewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,6 +51,12 @@ class MyApp extends StatelessWidget {
                   (_) => AuthViewmodel(
                     FirebaseAuthService(),
                     FirestoreUserService(),
+                  ),
+            ),
+             ChangeNotifierProvider(
+              create:
+                  (_) => FriendViewmodel(
+                    FirebaseFriendService()
                   ),
             ),
           ],

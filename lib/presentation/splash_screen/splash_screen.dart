@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as dart_math;
 
 import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
@@ -72,15 +73,12 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _startSplashSequence() async {
     try {
-      
       await _performInitializationTasks();
 
       if (mounted) {
         _navigateToNextScreen();
       }
-    } catch (e) {
-  
-    }
+    } catch (e) {}
   }
 
   Future<void> _performInitializationTasks() async {
@@ -108,27 +106,27 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
-void _navigateToNextScreen() async {
-  final user = FirebaseAuth.instance.currentUser;
+  void _navigateToNextScreen() async {
+    final user = FirebaseAuth.instance.currentUser;
+    log("email ${user?.email}");
 
-  if (user != null) {
-    print("User exists");
+    if (user != null) {
+      print("User exists");
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        settings: const RouteSettings(name: AppRoutes.bottomNav),
-        builder: (_) => const BottomNavScreen(),
-      ),
-      (route) => false,
-    );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          settings: const RouteSettings(name: AppRoutes.bottomNav),
+          builder: (_) => const BottomNavScreen(),
+        ),
+        (route) => false,
+      );
 
-    return; 
+      return;
+    }
+
+    Navigator.pushNamed(context, '/islamic-onboarding');
   }
-
- 
-  Navigator.pushNamed(context, '/islamic-onboarding');
-}
 
   void _retryInitialization() {
     setState(() {
