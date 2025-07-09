@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/app_export.dart';
-import '../../services/auth_service.dart';
 import '../../services/location_service.dart';
 import '../../services/prayer_time_service.dart';
 import '../../services/settings_service.dart';

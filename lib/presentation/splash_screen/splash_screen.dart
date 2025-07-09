@@ -1,12 +1,12 @@
 import 'dart:math' as dart_math;
 
+import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/app_export.dart';
-import '../../services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -72,19 +72,14 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _startSplashSequence() async {
     try {
-      // Simulate initialization tasks
+      
       await _performInitializationTasks();
 
       if (mounted) {
         _navigateToNextScreen();
       }
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _hasError = true;
-          _loadingText = 'Connection failed. Tap to retry.';
-        });
-      }
+  
     }
   }
 
@@ -113,30 +108,27 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
-  void _navigateToNextScreen() async {
-    // Check if user is already authenticated
-    // final authService = AuthService();
-    // final isAuthenticated = await authService.autoSignIn();
+void _navigateToNextScreen() async {
+  final user = FirebaseAuth.instance.currentUser;
 
-    // String nextRoute;
-    // if (isAuthenticated) {
-    //   nextRoute = '/main-dhikr-counter';
-    // } else {
-    //   // Check if first time user (can be determined by checking for saved preferences)
-    //   final prefs = await SharedPreferences.getInstance();
-    //   final isFirstTime = prefs.getBool('is_first_time') ?? true;
+  if (user != null) {
+    print("User exists");
 
-    //   if (isFirstTime) {
-    //     nextRoute = '/islamic-onboarding';
-    //   } else {
-    //     nextRoute = '/login-screen';
-    //   }
-    // }
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: AppRoutes.bottomNav),
+        builder: (_) => const BottomNavScreen(),
+      ),
+      (route) => false,
+    );
 
-    // Navigator.pushReplacementNamed(context, nextRoute);
-
-    Navigator.pushNamed(context, '/islamic-onboarding');
+    return; 
   }
+
+ 
+  Navigator.pushNamed(context, '/islamic-onboarding');
+}
 
   void _retryInitialization() {
     setState(() {
@@ -293,48 +285,48 @@ class _SplashScreenState extends State<SplashScreen>
   Widget _buildLoadingIndicator() {
     return _hasError
         ? CustomIconWidget(
-            iconName: 'error_outline',
-            color: Colors.white.withValues(alpha: 0.8),
-            size: 6.w,
-          )
+          iconName: 'error_outline',
+          color: Colors.white.withValues(alpha: 0.8),
+          size: 6.w,
+        )
         : Column(
-            children: [
-              SizedBox(
-                width: 6.w,
-                height: 6.w,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.white.withValues(alpha: 0.8),
-                  ),
-                  strokeWidth: 2.0,
+          children: [
+            SizedBox(
+              width: 6.w,
+              height: 6.w,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.white.withValues(alpha: 0.8),
                 ),
+                strokeWidth: 2.0,
               ),
-              SizedBox(height: 1.h),
-              Container(
-                width: 60.w,
-                height: 0.5.h,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: AnimatedBuilder(
-                  animation: _loadingAnimation,
-                  builder: (context, child) {
-                    return FractionallySizedBox(
-                      alignment: Alignment.centerLeft,
-                      widthFactor: _loadingProgress,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+            ),
+            SizedBox(height: 1.h),
+            Container(
+              width: 60.w,
+              height: 0.5.h,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: AnimatedBuilder(
+                animation: _loadingAnimation,
+                builder: (context, child) {
+                  return FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: _loadingProgress,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        borderRadius: BorderRadius.circular(2),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
-            ],
-          );
+            ),
+          ],
+        );
   }
 
   Widget _buildLoadingText() {
@@ -392,10 +384,11 @@ class _SplashScreenState extends State<SplashScreen>
 class IslamicPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.1)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.1)
+          ..strokeWidth = 1.0
+          ..style = PaintingStyle.stroke;
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.3;

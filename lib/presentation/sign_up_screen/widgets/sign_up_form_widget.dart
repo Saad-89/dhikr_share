@@ -1,7 +1,9 @@
 import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
+import 'package:dhikr_share/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:dhikr_share/routes/app_routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignUpFormWidget extends StatefulWidget {
   const SignUpFormWidget({super.key});
@@ -17,7 +19,7 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
-  bool _rememberMe = false;
+  final bool _rememberMe = false;
   bool _obscurePassword = true;
   String? _errorMessage;
 
@@ -157,35 +159,51 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
           SizedBox(
             width: double.infinity,
             height: 50,
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : _signUp,
+            child: Consumer<AuthViewmodel>(
+              builder: (context, provider, child) {
+                if (provider.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      provider.signUp(
+                        context,
+                        _userController.text,
+                        _emailController.text,
+                        _passwordController.text,
+                      );
+                    }
+                  },
 
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child:
-                  _isLoading
-                      ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child:
+                      _isLoading
+                          ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                          : const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                      )
-                      : const Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                );
+              },
             ),
           ),
 

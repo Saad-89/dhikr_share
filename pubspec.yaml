@@ -60,6 +60,10 @@ dependencies:
   record:
   image_picker: ^1.1.2
   universal_html: ^2.2.4
+  firebase_auth: ^5.6.2
+  firebase_core: ^3.15.1
+  provider: ^6.1.5
+  cloud_firestore: ^5.6.11
 
 dev_dependencies:
   flutter_test:

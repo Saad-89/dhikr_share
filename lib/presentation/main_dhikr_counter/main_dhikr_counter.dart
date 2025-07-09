@@ -27,14 +27,14 @@ class _MainDhikrCounterState extends State<MainDhikrCounter>
   bool _showProgressSummary = false;
   final bool _useArabicNumerals = false;
   bool _isLoading = false;
-  bool _hasError = false;
-  String _errorMessage = '';
+  final bool _hasError = false;
+  final String _errorMessage = '';
   double _voiceVolume = 0.0;
   String _voiceStatus = 'Ready';
 
   // Settings for voice feedback
-  bool _visualFeedbackEnabled = true;
-  bool _hapticFeedbackEnabled = true;
+  final bool _visualFeedbackEnabled = true;
+  final bool _hapticFeedbackEnabled = true;
 
   // Track gesture types to prevent unwanted navigation
   bool _isCounterTap = false;
