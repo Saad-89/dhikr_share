@@ -1,4 +1,4 @@
-import 'package:dhikr_share/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:dhikr_share/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -138,44 +138,47 @@ class _SettingsState extends State<Settings> {
   void _showLogoutConfirmation() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Confirm Logout'),
-        content: Text(
-          'Are you sure you want to logout? Your local data will be preserved.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          Consumer<AuthViewmodel>(
-            builder: (context,provider,child) {
-              if (provider.isLoading) {
-                return Center(child: CircularProgressIndicator(),);
-              }
-              return ElevatedButton(
-                onPressed: ()  {
-
-               provider.signOut(context);
-                  // Navigator.pop(context);
-                  // // await _authService.signOut();
-                  // if (mounted) {
-                  //   Navigator.pushNamedAndRemoveUntil(
-                  //     context,
-                  //     '/login-screen',
-                  //     (route) => false,
-                  //   );
-                  // }
+      builder:
+          (context) => AlertDialog(
+            title: Text('Confirm Logout'),
+            content: Text(
+              'Are you sure you want to logout? Your local data will be preserved.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              Consumer<AuthViewmodel>(
+                builder: (context, provider, child) {
+                  if (provider.isLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return ElevatedButton(
+                    onPressed: () {
+                      provider.signOut(context);
+                      // Navigator.pop(context);
+                      // // await _authService.signOut();
+                      // if (mounted) {
+                      //   Navigator.pushNamedAndRemoveUntil(
+                      //     context,
+                      //     '/login-screen',
+                      //     (route) => false,
+                      //   );
+                      // }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.lightTheme.colorScheme.error,
+                    ),
+                    child: Text(
+                      'Logout',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.lightTheme.colorScheme.error,
-                ),
-                child: Text('Logout', style: TextStyle(color: Colors.white)),
-              );
-            }
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

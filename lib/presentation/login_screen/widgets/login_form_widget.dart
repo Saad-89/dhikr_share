@@ -1,5 +1,5 @@
 import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
-import 'package:dhikr_share/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:dhikr_share/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
@@ -114,7 +114,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     //   _isLoading = false;
     // });
     // }
-  Navigator.pushAndRemoveUntil(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         settings: RouteSettings(name: AppRoutes.bottomNav),
@@ -219,31 +219,39 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             },
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
 
           // Remember me checkbox
-          Row(
-            children: [
-              Checkbox(
-                value: _rememberMe,
-                onChanged: (value) {
-                  setState(() {
-                    _rememberMe = value ?? false;
-                  });
-                },
-              ),
-              const Text('Remember me'),
-              const Spacer(),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement forgot password
-                },
-                child: const Text('Forgot Password?'),
-              ),
-            ],
+          TextButton(
+            onPressed: () {
+              // TODO: Implement forgot password
+              Navigator.pushNamed(context, '/reset-password');
+            },
+            child: const Text('Forgot Password?'),
           ),
 
-          const SizedBox(height: 24),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   children: [
+          //     // Checkbox(
+          //     //   value: _rememberMe,
+          //     //   onChanged: (value) {
+          //     //     setState(() {
+          //     //       _rememberMe = value ?? false;
+          //     //     });
+          //     //   },
+          //     // ),
+          //     // const Text('Remember me'),
+          //     // const Spacer(),
+          //     TextButton(
+          //       onPressed: () {
+          //         // TODO: Implement forgot password
+          //       },
+          //       child: const Text('Forgot Password?'),
+          //     ),
+          //   ],
+          // ),
+          const SizedBox(height: 16),
 
           // Error message
           if (_errorMessage != null)
@@ -267,15 +275,19 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             width: double.infinity,
             height: 50,
             child: Consumer<AuthViewmodel>(
-              builder: (context,provider,child) {
+              builder: (context, provider, child) {
                 if (provider.isLoading) {
-                  return Center(child: CircularProgressIndicator(),);
+                  return Center(child: CircularProgressIndicator());
                 }
                 return ElevatedButton(
-                  onPressed: (){
-                    provider.signIn(context, _emailController.text, _passwordController.text);
+                  onPressed: () {
+                    provider.signIn(
+                      context,
+                      _emailController.text,
+                      _passwordController.text,
+                    );
                   },
-                
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
                     foregroundColor: Colors.white,
@@ -283,40 +295,42 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  child:
+                      _isLoading
+                          ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                          : const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        )
-                      : const Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
                 );
-              }
+              },
             ),
           ),
 
-          const SizedBox(height: 16),
+          // const SizedBox(height: 16),
 
-          // Create test user button (for debugging)
-          if (kDebugMode)
-            TextButton(
-              // onPressed: _isLoading ? null : _createTestUser,
-              onPressed: null,
-              child: const Text(
-                'Create Test User (Debug)',
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-
+          // // Create test user button (for debugging)
+          // if (kDebugMode)
+          //   TextButton(
+          //     // onPressed: _isLoading ? null : _createTestUser,
+          //     onPressed: null,
+          //     child: const Text(
+          //       'Create Test User (Debug)',
+          //       style: TextStyle(fontSize: 12),
+          //     ),
+          //   ),
           const SizedBox(height: 16),
 
           // Sign up option
@@ -326,7 +340,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               const Text("Don't have an account? "),
               TextButton(
                 onPressed: () {
-    Navigator.pushNamed(context, AppRoutes.signUpScreen);
+                  Navigator.pushNamed(context, AppRoutes.signUpScreen);
 
                   // TODO: Navigate to sign up screen
                   // Navigator.pushNamed(context, '/islamic-onboarding');
@@ -347,4 +361,3 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     super.dispose();
   }
 }
-

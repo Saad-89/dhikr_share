@@ -1,5 +1,5 @@
 import 'package:dhikr_share/domain/models/friend_request_model.dart';
-import 'package:dhikr_share/presentation/viewmodels/friend_viewmodel.dart';
+import 'package:dhikr_share/viewmodels/friend_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -544,7 +544,9 @@ String timeAgo(DateTime dateTime) {
 
   if (difference.inSeconds < 60) return 'Just now';
   if (difference.inMinutes < 60) return '${difference.inMinutes} min ago';
-  if (difference.inHours < 24) return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
-  if (difference.inDays < 7) return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+  if (difference.inHours < 24)
+    return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+  if (difference.inDays < 7)
+    return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
   return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
 }

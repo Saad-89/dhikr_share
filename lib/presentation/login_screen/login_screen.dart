@@ -57,7 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
- 
   void _navigateToHome() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('is_first_time', false);
@@ -126,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Login Form
                 LoginFormWidget(),
-                SizedBox(height: 4.h),
+                SizedBox(height: 3.h),
 
                 // Divider with "OR"
                 Row(
@@ -143,10 +142,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         'OR',
                         style: AppTheme.lightTheme.textTheme.bodySmall
                             ?.copyWith(
-                              color: AppTheme
-                                  .lightTheme
-                                  .colorScheme
-                                  .onSurfaceVariant,
+                              color:
+                                  AppTheme
+                                      .lightTheme
+                                      .colorScheme
+                                      .onSurfaceVariant,
                               fontWeight: FontWeight.w500,
                             ),
                       ),
@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
 
-                SizedBox(height: 3.h),
+                SizedBox(height: 0.h),
 
                 // Social Login Options
                 // SocialLoginWidget(
@@ -203,4 +203,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

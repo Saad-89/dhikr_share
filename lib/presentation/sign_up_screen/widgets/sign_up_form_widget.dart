@@ -1,5 +1,5 @@
 import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
-import 'package:dhikr_share/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:dhikr_share/viewmodels/auth_viewmodel.dart';
 import 'package:dhikr_share/routes/app_routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -209,19 +209,18 @@ class _SignUpFormWidgetState extends State<SignUpFormWidget> {
 
           const SizedBox(height: 16),
 
-          // Create test user button (for debugging)
-          if (kDebugMode)
-            TextButton(
-              // onPressed: _isLoading ? null : _createTestUser,
-              onPressed: null,
-              child: const Text(
-                'Create Test User (Debug)',
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
+          // // Create test user button (for debugging)
+          // if (kDebugMode)
+          //   TextButton(
+          //     // onPressed: _isLoading ? null : _createTestUser,
+          //     onPressed: null,
+          //     child: const Text(
+          //       'Create Test User (Debug)',
+          //       style: TextStyle(fontSize: 12),
+          //     ),
+          //   ),
 
-          const SizedBox(height: 16),
-
+          // const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

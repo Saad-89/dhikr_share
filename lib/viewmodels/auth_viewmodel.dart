@@ -66,7 +66,7 @@ class AuthViewmodel extends ChangeNotifier {
         ),
         (route) => false,
       );
-      Fluttertoast.showToast(msg: "Sign In Successfully Created SuccessFully!");
+      Fluttertoast.showToast(msg: "Sign In Successfully!");
     } catch (e) {
       _setLoading(false);
       print(e.toString());
@@ -89,5 +89,22 @@ class AuthViewmodel extends ChangeNotifier {
       print(e.toString());
     }
   }
-}
 
+  Future<void> sendPasswordResetEmail(
+    BuildContext context,
+    String email,
+  ) async {
+    _setLoading(true);
+    try {
+      await authService.sendPasswordResetEmail(email);
+      _setLoading(false);
+      Fluttertoast.showToast(msg: "Password reset email sent successfully!");
+      Navigator.pop(context);
+    } catch (e) {
+      _setLoading(false);
+      Fluttertoast.showToast(
+        msg: "Failed to send reset email: ${e.toString()}",
+      );
+    }
+  }
+}

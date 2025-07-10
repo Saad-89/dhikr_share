@@ -1,3 +1,4 @@
+import 'package:dhikr_share/presentation/forget_password/reset_password_screen.dart';
 import 'package:dhikr_share/presentation/sign_up_screen/sign_up_screen.dart';
 import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String challengeMode = '/challenge-mode';
   static const String signUpScreen = '/sign-up-screen';
   static const String bottomNav = '/bottom-nav';
+  static const String resetPassword = '/reset-password';
 
   static Map<String, WidgetBuilder> routes = {
     initial: (context) => const SplashScreen(),
@@ -41,8 +43,9 @@ class AppRoutes {
     aiInsights: (context) => const AiInsights(),
     challengeMode: (context) => const ChallengeMode(),
     signUpScreen: (context) => const SignUpScreen(),
-    
+
     bottomNav: (context) => const BottomNavScreen(),
+    resetPassword: (context) => const ResetPasswordScreen(),
     // TODO: Add your other routes here
   };
 }
