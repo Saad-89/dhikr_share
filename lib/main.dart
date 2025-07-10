@@ -14,10 +14,6 @@ void main() async {
     return CustomErrorWidget(errorDetails: details);
   };
 
-
-
-
-
   // Initialize Supabase
   // try {
   //   // SupabaseService();

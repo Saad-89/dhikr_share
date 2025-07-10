@@ -103,12 +103,10 @@ class OpenAIClient {
         '/chat/completions',
         data: {
           'model': model,
-          'messages': messages
-              .map((m) => {
-                    'role': m.role,
-                    'content': m.content,
-                  })
-              .toList(),
+          'messages':
+              messages
+                  .map((m) => {'role': m.role, 'content': m.content})
+                  .toList(),
           if (options != null) ...options,
         },
       );
@@ -117,7 +115,8 @@ class OpenAIClient {
     } on DioException catch (e) {
       throw OpenAIException(
         statusCode: e.response?.statusCode ?? 500,
-        message: e.response?.data['error']?['message'] ??
+        message:
+            e.response?.data['error']?['message'] ??
             e.message ??
             'Unknown error',
       );
@@ -136,12 +135,10 @@ class OpenAIClient {
         '/chat/completions',
         data: {
           'model': model,
-          'messages': messages
-              .map((m) => {
-                    'role': m.role,
-                    'content': m.content,
-                  })
-              .toList(),
+          'messages':
+              messages
+                  .map((m) => {'role': m.role, 'content': m.content})
+                  .toList(),
           'stream': true,
           if (options != null) ...options,
         },
@@ -149,8 +146,9 @@ class OpenAIClient {
       );
 
       final stream = response.data.stream;
-      await for (var line
-          in LineSplitter().bind(utf8.decoder.bind(stream.stream))) {
+      await for (var line in LineSplitter().bind(
+        utf8.decoder.bind(stream.stream),
+      )) {
         if (line.startsWith('data: ')) {
           final data = line.substring(6);
           if (data == '[DONE]') break;
@@ -174,7 +172,8 @@ class OpenAIClient {
     } on DioException catch (e) {
       throw OpenAIException(
         statusCode: e.response?.statusCode ?? 500,
-        message: e.response?.data['error']?['message'] ??
+        message:
+            e.response?.data['error']?['message'] ??
             e.message ??
             'Unknown error',
       );
@@ -208,7 +207,8 @@ class OpenAIClient {
     } on DioException catch (e) {
       throw OpenAIException(
         statusCode: e.response?.statusCode ?? 500,
-        message: e.response?.data['error']?['message'] ??
+        message:
+            e.response?.data['error']?['message'] ??
             e.message ??
             'Unknown error',
       );
@@ -237,31 +237,27 @@ class OpenAIClient {
       if (imageUrl != null) {
         content.add({
           'type': 'image_url',
-          'image_url': {'url': imageUrl}
+          'image_url': {'url': imageUrl},
         });
       } else if (imageBytes != null) {
         // Convert image bytes to base64
         final base64Image = base64Encode(imageBytes);
         content.add({
           'type': 'image_url',
-          'image_url': {'url': 'data:image/jpeg;base64,$base64Image'}
+          'image_url': {'url': 'data:image/jpeg;base64,$base64Image'},
         });
       }
 
-      final messages = [
-        Message(role: 'user', content: content),
-      ];
+      final messages = [Message(role: 'user', content: content)];
 
       final response = await dio.post(
         '/chat/completions',
         data: {
           'model': model,
-          'messages': messages
-              .map((m) => {
-                    'role': m.role,
-                    'content': m.content,
-                  })
-              .toList(),
+          'messages':
+              messages
+                  .map((m) => {'role': m.role, 'content': m.content})
+                  .toList(),
           if (options != null) ...options,
         },
       );
@@ -271,7 +267,8 @@ class OpenAIClient {
     } on DioException catch (e) {
       throw OpenAIException(
         statusCode: e.response?.statusCode ?? 500,
-        message: e.response?.data['error']?['message'] ??
+        message:
+            e.response?.data['error']?['message'] ??
             e.message ??
             'Unknown error',
       );
@@ -295,7 +292,7 @@ class OpenAIClient {
           'prompt': prompt,
           'n': n,
           'size': size,
-          'response_format': responseFormat
+          'response_format': responseFormat,
         },
       );
 
@@ -308,15 +305,9 @@ class OpenAIClient {
 
       for (var item in data) {
         if (responseFormat == 'url') {
-          images.add(GeneratedImage(
-            url: item['url'],
-            base64Data: null,
-          ));
+          images.add(GeneratedImage(url: item['url'], base64Data: null));
         } else if (responseFormat == 'b64_json') {
-          images.add(GeneratedImage(
-            url: null,
-            base64Data: item['b64_json'],
-          ));
+          images.add(GeneratedImage(url: null, base64Data: item['b64_json']));
         }
       }
 
@@ -327,7 +318,8 @@ class OpenAIClient {
     } on DioException catch (e) {
       throw OpenAIException(
         statusCode: e.response?.statusCode ?? 500,
-        message: e.response?.data['error']?['message'] ??
+        message:
+            e.response?.data['error']?['message'] ??
             e.message ??
             'Unknown error',
       );
@@ -402,14 +394,16 @@ class OpenAIClient {
       final tempDir = await getTemporaryDirectory();
       final fileExtension = responseFormat == 'opus' ? 'ogg' : responseFormat;
       final audioFile = File(
-          '${tempDir.path}/speech_${DateTime.now().millisecondsSinceEpoch}.$fileExtension');
+        '${tempDir.path}/speech_${DateTime.now().millisecondsSinceEpoch}.$fileExtension',
+      );
       await audioFile.writeAsBytes(response.data);
 
       return audioFile;
     } on DioException catch (e) {
       throw OpenAIException(
         statusCode: e.response?.statusCode ?? 500,
-        message: e.response?.data['error']?['message'] ??
+        message:
+            e.response?.data['error']?['message'] ??
             e.message ??
             'Unknown error',
       );
@@ -428,7 +422,8 @@ class OpenAIClient {
   }) async {
     try {
       // Enhanced prompt for Islamic dhikr phrases
-      final dhikrPrompt = prompt ??
+      final dhikrPrompt =
+          prompt ??
           'This audio contains Islamic dhikr phrases like Subhan Allah, Alhamdulillah, Allahu Akbar, La ilaha illa Allah, Astaghfirullah, Bismillah, Rabbi ghfir li. Listen for these exact Arabic phrases and their variations.';
 
       final formData = FormData.fromMap({
@@ -445,10 +440,7 @@ class OpenAIClient {
             temperature ?? 0.0, // Lower temperature for more consistent results
       });
 
-      final response = await dio.post(
-        '/audio/transcriptions',
-        data: formData,
-      );
+      final response = await dio.post('/audio/transcriptions', data: formData);
 
       if (responseFormat == 'json') {
         return Transcription(text: response.data['text']);
@@ -458,7 +450,8 @@ class OpenAIClient {
     } on DioException catch (e) {
       throw OpenAIException(
         statusCode: e.response?.statusCode ?? 500,
-        message: e.response?.data['error']?['message'] ??
+        message:
+            e.response?.data['error']?['message'] ??
             e.message ??
             'Unknown error',
       );

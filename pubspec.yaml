@@ -44,7 +44,6 @@ dependencies:
   sizer: ^3.0.5
   fl_chart: ^1.0.0
   google_fonts: ^6.1.0
-  speech_to_text: ^7.0.0
   geolocator: ^14.0.2
   geocoding: ^4.0.0
   permission_handler: ^12.0.1
@@ -60,6 +59,7 @@ dependencies:
   record:
   image_picker: ^1.1.2
   universal_html: ^2.2.4
+  speech_to_text: ^7.1.0
 
 dev_dependencies:
   flutter_test:
