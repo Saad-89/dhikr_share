@@ -2,7 +2,6 @@ import 'package:dhikr_share/core/interfaces/auth_service.dart';
 import 'package:dhikr_share/data/services/firestore_user_service.dart';
 import 'package:dhikr_share/domain/models/user_model.dart';
 import 'package:dhikr_share/presentation/bottomNavBar/bottomNavBar.dart';
-import 'package:dhikr_share/presentation/login_screen/login_screen.dart';
 import 'package:dhikr_share/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

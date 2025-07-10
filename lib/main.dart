@@ -1,5 +1,3 @@
-import 'package:dhikr_share/core/interfaces/auth_service.dart';
-import 'package:dhikr_share/core/interfaces/friend_service.dart';
 import 'package:dhikr_share/data/services/firebase_auth_service.dart';
 import 'package:dhikr_share/data/services/firebase_friend_service.dart';
 import 'package:dhikr_share/data/services/firestore_user_service.dart';

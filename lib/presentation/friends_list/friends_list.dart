@@ -177,7 +177,7 @@ class _FriendsListState extends State<FriendsList>
   }
 
   void _showAddFriendDialog() {
-    final _emailController = TextEditingController();
+    final emailController = TextEditingController();
     showDialog(
       context: context,
       builder:
@@ -190,7 +190,7 @@ class _FriendsListState extends State<FriendsList>
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: _emailController,
+                  controller: emailController,
                   decoration: const InputDecoration(
                     hintText: 'Enter Email',
                     prefixIcon: Icon(Icons.search),
@@ -218,7 +218,7 @@ class _FriendsListState extends State<FriendsList>
                     onPressed: () {
                       provider.sendFriendRequestByEmail(
                         context,
-                        _emailController.text ?? "",
+                        emailController.text ?? "",
                       );
                     },
                     child: const Text('Send Request'),

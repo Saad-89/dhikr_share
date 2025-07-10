@@ -1,7 +1,5 @@
 import 'package:dhikr_share/core/interfaces/auth_service.dart';
 import 'package:dhikr_share/domain/models/user_model.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthService implements AuthService {

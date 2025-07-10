@@ -1,5 +1,4 @@
 import 'package:dhikr_share/data/services/firebase_friend_service.dart';
-import 'package:dhikr_share/domain/models/friend_request_model.dart';
 import 'package:dhikr_share/domain/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
