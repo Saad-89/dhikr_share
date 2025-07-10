@@ -1,4 +1,7 @@
+import 'package:dhikr_share/domain/models/friend_request_model.dart';
+import 'package:dhikr_share/presentation/viewmodels/friend_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/app_export.dart';
@@ -101,6 +104,9 @@ class _FriendsListState extends State<FriendsList>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<FriendViewmodel>(context, listen: false).loadFriendRequests();
+    });
   }
 
   @override
@@ -138,11 +144,12 @@ class _FriendsListState extends State<FriendsList>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => FriendRequestBottomSheet(
-        friendRequests: _friendRequests,
-        onAcceptRequest: _acceptFriendRequest,
-        onDeclineRequest: _declineFriendRequest,
-      ),
+      builder:
+          (context) => FriendRequestBottomSheet(
+            friendRequests: _friendRequests,
+            onAcceptRequest: _acceptFriendRequest,
+            onDeclineRequest: _declineFriendRequest,
+          ),
     );
   }
 
@@ -170,47 +177,56 @@ class _FriendsListState extends State<FriendsList>
   }
 
   void _showAddFriendDialog() {
+    final emailController = TextEditingController();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Add Friend',
-          style: AppTheme.lightTheme.textTheme.titleLarge,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              decoration: const InputDecoration(
-                hintText: 'Enter username or email',
-                prefixIcon: Icon(Icons.search),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              'Add Friend',
+              style: AppTheme.lightTheme.textTheme.titleLarge,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter Email',
+                    prefixIcon: Icon(Icons.search),
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  'Invite friends to join your spiritual journey',
+                  style: AppTheme.lightTheme.textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
               ),
-            ),
-            SizedBox(height: 2.h),
-            Text(
-              'Invite friends to join your spiritual journey',
-              style: AppTheme.lightTheme.textTheme.bodySmall,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+              Consumer<FriendViewmodel>(
+                builder: (context, provider, child) {
+                  if (provider.isLoading) {
+                    return CircularProgressIndicator();
+                  }
+                  return ElevatedButton(
+                    onPressed: () {
+                      provider.sendFriendRequestByEmail(
+                        context,
+                        emailController.text ?? "",
+                      );
+                    },
+                    child: const Text('Send Request'),
+                  );
+                },
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // Show success message
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Friend request sent!')),
-              );
-            },
-            child: const Text('Send Request'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -236,35 +252,36 @@ class _FriendsListState extends State<FriendsList>
   void _removeFriend(Map<String, dynamic> friend) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Remove Friend'),
-        content: Text(
-          'Are you sure you want to remove ${friend['name']} from your friends list?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _friendsList.removeWhere((f) => f['id'] == friend['id']);
-              });
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${friend['name']} removed from friends'),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.lightTheme.colorScheme.error,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Remove Friend'),
+            content: Text(
+              'Are you sure you want to remove ${friend['name']} from your friends list?',
             ),
-            child: const Text('Remove'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _friendsList.removeWhere((f) => f['id'] == friend['id']);
+                  });
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${friend['name']} removed from friends'),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.lightTheme.colorScheme.error,
+                ),
+                child: const Text('Remove'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -337,34 +354,33 @@ class _FriendsListState extends State<FriendsList>
                       color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
                       size: 20,
                     ),
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() {
-                                _searchQuery = '';
-                              });
-                            },
-                            icon: CustomIconWidget(
-                              iconName: 'clear',
-                              color: AppTheme
-                                  .lightTheme
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                              size: 20,
-                            ),
-                          )
-                        : null,
+                    suffixIcon:
+                        _searchQuery.isNotEmpty
+                            ? IconButton(
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {
+                                  _searchQuery = '';
+                                });
+                              },
+                              icon: CustomIconWidget(
+                                iconName: 'clear',
+                                color:
+                                    AppTheme
+                                        .lightTheme
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                size: 20,
+                              ),
+                            )
+                            : null,
                   ),
                 ),
               ),
               // Tab Bar
               TabBar(
                 controller: _tabController,
-                tabs: const [
-                  Tab(text: 'Friends'),
-                  Tab(text: 'Discover'),
-                ],
+                tabs: const [Tab(text: 'Friends'), Tab(text: 'Discover')],
               ),
             ],
           ),
@@ -520,4 +536,15 @@ class _FriendsListState extends State<FriendsList>
       ],
     );
   }
+}
+
+String timeAgo(DateTime dateTime) {
+  final now = DateTime.now();
+  final difference = now.difference(dateTime);
+
+  if (difference.inSeconds < 60) return 'Just now';
+  if (difference.inMinutes < 60) return '${difference.inMinutes} min ago';
+  if (difference.inHours < 24) return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+  if (difference.inDays < 7) return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+  return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
 }

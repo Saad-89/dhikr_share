@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/app_export.dart';
 import '../../theme/app_theme.dart';
-import '../../services/auth_service.dart';
 import './widgets/islamic_logo_widget.dart';
 import './widgets/login_form_widget.dart';
-import './widgets/social_login_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
-  bool _isLoading = false;
+  final bool _isLoading = false;
   bool _rememberMe = false;
 
   // final AuthService _authService = AuthService();

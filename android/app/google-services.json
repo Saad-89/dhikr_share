@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "939034205014",
+    "project_id": "dhikrshare-11f0e",
+    "storage_bucket": "dhikrshare-11f0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939034205014:android:3d24f91c257fc9d7bb94f7",
+        "android_client_info": {
+          "package_name": "com.techorphic.dhikr_share"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAXT9YwEevyEwd7e_yXo4ctkYLkC0EeFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
