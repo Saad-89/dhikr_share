@@ -13,16 +13,7 @@ void main() async {
   ErrorWidget.builder = (FlutterErrorDetails details) {
     return CustomErrorWidget(errorDetails: details);
   };
-  
 
-
-
-
-
-
-
-
-  
   // Initialize Supabase
   // try {
   //   // SupabaseService();
