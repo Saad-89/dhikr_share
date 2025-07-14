@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAAXT9YwEevyEwd7e_yXo4ctkYLkC0EeFI',
-    appId: '1:939034205014:android:3d24f91c257fc9d7bb94f7',
-    messagingSenderId: '939034205014',
-    projectId: 'dhikrshare-11f0e',
-    storageBucket: 'dhikrshare-11f0e.firebasestorage.app',
+    apiKey: 'AIzaSyAh4iUYnasEvqgUM-xe1Uyk3YuxqDGE2tc',
+    appId: '1:736611594914:android:17a700099d93f232e49dfb',
+    messagingSenderId: '736611594914',
+    projectId: 'dhikr-share-193d0',
+    storageBucket: 'dhikr-share-193d0.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDkciYWxTpUoBy-BwHuTzjSYUOYZYN3y5g',
-    appId: '1:939034205014:ios:e3078f461f91dccfbb94f7',
-    messagingSenderId: '939034205014',
-    projectId: 'dhikrshare-11f0e',
-    storageBucket: 'dhikrshare-11f0e.firebasestorage.app',
-    iosBundleId: 'com.techorphic.dhikrShare',
+    apiKey: 'AIzaSyDGiq13ydvmdJW7uUWP59hhmzL3aQxsicY',
+    appId: '1:736611594914:ios:55ac9c6278805d4be49dfb',
+    messagingSenderId: '736611594914',
+    projectId: 'dhikr-share-193d0',
+    storageBucket: 'dhikr-share-193d0.firebasestorage.app',
+    iosBundleId: 'techorphic.com.dhikr.share',
   );
 }

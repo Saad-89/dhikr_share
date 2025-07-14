@@ -124,75 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 // Login Form
                 SignUpFormWidget(),
-                // SizedBox(height: 4.h),
-
-                // // Divider with "OR"
-                // Row(
-                //   children: [
-                //     Expanded(
-                //       child: Divider(
-                //         color: AppTheme.lightTheme.dividerColor,
-                //         thickness: 1,
-                //       ),
-                //     ),
-                //     Padding(
-                //       padding: EdgeInsets.symmetric(horizontal: 4.w),
-                //       child: Text(
-                //         'OR',
-                //         style: AppTheme.lightTheme.textTheme.bodySmall
-                //             ?.copyWith(
-                //               color: AppTheme
-                //                   .lightTheme
-                //                   .colorScheme
-                //                   .onSurfaceVariant,
-                //               fontWeight: FontWeight.w500,
-                //             ),
-                //       ),
-                //     ),
-                //     Expanded(
-                //       child: Divider(
-                //         color: AppTheme.lightTheme.dividerColor,
-                //         thickness: 1,
-                //       ),
-                //     ),
-                //   ],
-                // ),
-
-                // SizedBox(height: 3.h),
-
-                // Social Login Options
-                // SocialLoginWidget(
-                //   onGoogleLogin: () => _handleSocialLogin('Google'),
-                //   onAppleLogin: () => _handleSocialLogin('Apple'),
-                // ),
-                // SizedBox(height: 6.h),
-
-                // // Registration Link
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     Text(
-                //       'New user? ',
-                //       style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                //         color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                //       ),
-                //     ),
-                //     GestureDetector(
-                //       onTap: _navigateToRegistration,
-                //       child: Text(
-                //         'Join our Ummah',
-                //         style: AppTheme.lightTheme.textTheme.bodyMedium
-                //             ?.copyWith(
-                //               color: AppTheme.lightTheme.colorScheme.primary,
-                //               fontWeight: FontWeight.w600,
-                //               decoration: TextDecoration.underline,
-                //             ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-
-                // SizedBox(height: 2.h),
+               
              
               ],
             ),

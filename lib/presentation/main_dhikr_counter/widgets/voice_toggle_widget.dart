@@ -203,7 +203,7 @@ class _VoiceToggleWidgetState extends State<VoiceToggleWidget>
                 _breathingController,
               ]),
               builder: (context, child) {
-                return Container(
+                return SizedBox(
                   // Fixed container size to prevent overflow
                   width: 15.w, // Exact button size
                   height: 15.w,
@@ -212,7 +212,7 @@ class _VoiceToggleWidgetState extends State<VoiceToggleWidget>
                     children: [
                       // Initialization pulse for feedback - very controlled
                       if (AISpeechRecognitionService.isInitializing)
-                        Container(
+                        SizedBox(
                           width: 15.w, // Same as button size
                           height: 15.w,
                           child: Transform.scale(
@@ -233,7 +233,7 @@ class _VoiceToggleWidgetState extends State<VoiceToggleWidget>
 
                       // Outer pulse ring for active state - very controlled
                       if (widget.isActive && widget.visualFeedbackEnabled)
-                        Container(
+                        SizedBox(
                           width: 15.w, // Same as button size
                           height: 15.w,
                           child: Transform.scale(

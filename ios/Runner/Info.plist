@@ -45,6 +45,12 @@
 	<string>This app needs microphone access for voice recognition to count dhikr phrases</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app needs speech recognition to detect dhikr phrases automatically</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs location access to provide accurate prayer times based on your geographical location.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs location access to provide accurate prayer times and send prayer time notifications.</string>
+
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

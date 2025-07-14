@@ -49,12 +49,6 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
   int _lastCount = 0;
   bool _wasListening = false;
 
-  static const double _maxIncrementScale = 1.05;
-  static const double _maxListeningScale = 1.02;
-  static const double _maxVolumeScale = 0.03;
-  static const double _maxSuccessScale = 0.1;
-  static const double _maxRingScale = 0.015; // Reduced from 0.05
-
   @override
   void initState() {
     super.initState();
@@ -62,49 +56,44 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
     _wasListening = widget.isVoiceListening;
 
     _incrementAnimationController = AnimationController(
-      duration: Duration(milliseconds: 200),
+      duration: Duration(milliseconds: 300),
       vsync: this,
     );
 
     _listeningAnimationController = AnimationController(
-      duration: Duration(milliseconds: 3000),
+      duration: Duration(milliseconds: 2000),
       vsync: this,
     );
 
     _volumeAnimationController = AnimationController(
-      duration: Duration(milliseconds: 150),
+      duration: Duration(milliseconds: 100),
       vsync: this,
     );
 
     _successAnimationController = AnimationController(
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 600),
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: _maxIncrementScale,
-    ).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
       CurvedAnimation(
         parent: _incrementAnimationController,
-        curve: Curves.easeOut,
+        curve: Curves.elasticOut,
       ),
     );
 
-    _colorAnimation = ColorTween(
-      begin: AppTheme.lightTheme.colorScheme.primary,
-      end: AppTheme.lightTheme.colorScheme.secondary,
-    ).animate(
-      CurvedAnimation(
-        parent: _incrementAnimationController,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _colorAnimation =
+        ColorTween(
+          begin: AppTheme.lightTheme.colorScheme.primary,
+          end: AppTheme.lightTheme.colorScheme.secondary,
+        ).animate(
+          CurvedAnimation(
+            parent: _incrementAnimationController,
+            curve: Curves.easeInOut,
+          ),
+        );
 
-    _listeningPulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: _maxListeningScale,
-    ).animate(
+    _listeningPulseAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
       CurvedAnimation(
         parent: _listeningAnimationController,
         curve: Curves.easeInOut,
@@ -121,7 +110,7 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
     _successAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _successAnimationController,
-        curve: Curves.easeOut,
+        curve: Curves.bounceOut,
       ),
     );
 
@@ -134,11 +123,17 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
   void didUpdateWidget(EnhancedDhikrCounterWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    // Handle count changes with enhanced feedback
     if (oldWidget.count != widget.count) {
+      debugPrint('=== ENHANCED COUNTER WIDGET UPDATE ===');
+      debugPrint('Counter updated from ${oldWidget.count} to ${widget.count}');
+
+      // Trigger increment animation
       _incrementAnimationController.forward().then((_) {
         _incrementAnimationController.reverse();
       });
 
+      // Trigger success animation for voice detection
       if (widget.isVoiceListening && widget.onPhraseDetected != null) {
         _triggerSuccessAnimation();
       }
@@ -146,6 +141,7 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
       _lastCount = widget.count;
     }
 
+    // Handle listening state changes
     if (oldWidget.isVoiceListening != widget.isVoiceListening) {
       if (widget.isVoiceListening) {
         _listeningAnimationController.repeat(reverse: true);
@@ -156,6 +152,7 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
       _wasListening = widget.isVoiceListening;
     }
 
+    // Handle volume changes for sound sensitivity
     if (oldWidget.voiceVolume != widget.voiceVolume &&
         widget.isVoiceListening) {
       if (widget.voiceVolume > 0.3) {
@@ -178,10 +175,12 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
   void _triggerSuccessAnimation() {
     if (!mounted) return;
 
+    // Haptic feedback if enabled
     if (widget.hapticFeedbackEnabled) {
       HapticFeedback.mediumImpact();
     }
 
+    // Visual feedback if enabled
     if (widget.visualFeedbackEnabled) {
       _successAnimationController.forward().then((_) {
         if (mounted) {
@@ -216,206 +215,183 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
       ]),
       builder: (context, child) {
         final baseScale = _scaleAnimation.value;
-        final listeningScale =
-            widget.isVoiceListening ? _listeningPulseAnimation.value : 1.0;
-        final volumeScale =
-            widget.isVoiceListening
-                ? (1.0 +
-                    (_volumeAnimation.value *
-                        widget.voiceVolume *
-                        _maxVolumeScale))
-                : 1.0;
+        final listeningScale = widget.isVoiceListening
+            ? _listeningPulseAnimation.value
+            : 1.0;
+        final volumeScale = widget.isVoiceListening
+            ? (1.0 + (_volumeAnimation.value * widget.voiceVolume * 0.02))
+            : 1.0;
         final finalScale = baseScale * listeningScale * volumeScale;
 
-        return Container(
-          width: 65.w,
-          height: 65.w,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Reduced listening outer ring
-              if (widget.isVoiceListening && widget.visualFeedbackEnabled)
-                ...List.generate(1, (index) {
-                  final ringScale =
-                      1.0 +
-                      (index + 1) * _maxRingScale +
-                      (_volumeAnimation.value *
-                          widget.voiceVolume *
-                          _maxRingScale);
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // Listening outer rings (sound sensitivity indicator) - Fixed scaling
+            if (widget.isVoiceListening && widget.visualFeedbackEnabled)
+              ...List.generate(3, (index) {
+                final baseRingSize = 60.w + (index * 8.w); // More controlled ring sizing
+                final ringScale = 1.0 + (_volumeAnimation.value * widget.voiceVolume * 0.05); // Much smaller scale factor
+                final opacity = (1.0 - (index * 0.3)) * (0.2 + _volumeAnimation.value * widget.voiceVolume * 0.3);
 
-                  final opacity =
-                      (1.0 - (index * 0.4)) *
-                      (0.1 +
-                          _volumeAnimation.value *
-                              widget.voiceVolume *
-                              0.15); // Lower opacity
-
-                  return Container(
-                    width: 60.w,
-                    height: 60.w,
-                    child: Transform.scale(
-                      scale: ringScale,
-                      child: Container(
-                        width: 60.w,
-                        height: 60.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AppTheme.lightTheme.colorScheme.primary
-                                .withOpacity(opacity.clamp(0.0, 1.0)),
-                            width: 0.5, // Reduced thickness
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-
-              // Success visual
-              if (_successAnimation.value > 0.0 && widget.visualFeedbackEnabled)
-                Container(
-                  width: 60.w,
-                  height: 60.w,
-                  child: Transform.scale(
-                    scale: 1.0 + (_successAnimation.value * _maxSuccessScale),
-                    child: Container(
-                      width: 60.w,
-                      height: 60.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.green.withOpacity(
-                            (_successAnimation.value * 0.6).clamp(0.0, 1.0),
-                          ),
-                          width: 2,
-                        ),
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.check_circle,
-                          size: 15.w,
-                          color: Colors.green.withOpacity(
-                            (_successAnimation.value * 0.8).clamp(0.0, 1.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-              // Main counter
-              Transform.scale(
-                scale: finalScale.clamp(0.95, 1.08),
-                child: Container(
-                  width: 60.w,
-                  height: 60.w,
+                return Container(
+                  width: baseRingSize * ringScale,
+                  height: baseRingSize * ringScale,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color:
-                        widget.isVoiceListening && widget.visualFeedbackEnabled
-                            ? Color.lerp(
-                              _colorAnimation.value,
-                              AppTheme.lightTheme.colorScheme.primary,
-                              0.8,
-                            )
-                            : _colorAnimation.value,
-                    boxShadow: [
-                      BoxShadow(
-                        color:
-                            widget.isVoiceListening
-                                ? AppTheme.lightTheme.colorScheme.primary
-                                    .withOpacity(0.3)
-                                : AppTheme.lightTheme.colorScheme.shadow
-                                    .withOpacity(0.2),
-                        blurRadius: widget.isVoiceListening ? 12 : 8,
-                        offset: Offset(0, 4),
-                        spreadRadius: 0,
-                      ),
-                    ],
+                    border: Border.all(
+                      color: AppTheme.lightTheme.colorScheme.primary
+                          .withValues(alpha: opacity),
+                      width: 1.5,
+                    ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _formatNumber(widget.count),
-                        style: GoogleFonts.inter(
-                          fontSize: 26.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      if (widget.selectedPhrase.isNotEmpty) ...[
-                        SizedBox(height: 0.5.h),
-                        Builder(
-                          builder: (context) {
-                            final dailyGoal =
-                                widget.selectedPhrase['dailyGoal'] as int? ??
-                                33;
-                            final percentage =
-                                dailyGoal > 0
-                                    ? ((widget.count / dailyGoal) * 100)
-                                        .clamp(0.0, 100.0)
-                                        .toInt()
-                                    : 0;
+                );
+              }),
 
-                            return Text(
-                              '$percentage%',
-                              style: GoogleFonts.inter(
-                                fontSize: 16.sp,
-                                color: Colors.white.withOpacity(0.9),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                      SizedBox(height: 1.h),
-                      if (widget.selectedPhrase.isNotEmpty)
-                        Text(
-                          widget.selectedPhrase['transliteration'] ?? '',
-                          style: GoogleFonts.inter(
-                            fontSize: 14.sp,
-                            color: Colors.white.withOpacity(0.8),
-                            fontWeight: FontWeight.w500,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      if (widget.isVoiceListening &&
-                          widget.visualFeedbackEnabled) ...[
-                        SizedBox(height: 0.5.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.mic,
-                              size: 12.sp,
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                            SizedBox(width: 1.w),
-                            Text(
-                              'Listening',
-                              style: GoogleFonts.inter(
-                                fontSize: 8.sp,
-                                color: Colors.white.withOpacity(0.8),
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ],
+            // Success indicator overlay - Fixed scaling
+            if (_successAnimation.value > 0.0 && widget.visualFeedbackEnabled)
+              Transform.scale(
+                scale: 1.0 + (_successAnimation.value * 0.1), // Reduced from 0.3 to 0.1
+                child: Container(
+                  width: 65.w,
+                  height: 65.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.green.withValues(
+                        alpha: _successAnimation.value * 0.8,
+                      ),
+                      width: 3,
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.check_circle,
+                      size: 15.w, // Reduced from 20.w
+                      color: Colors.green.withValues(
+                        alpha: _successAnimation.value,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ],
-          ),
+
+            // Main counter circle
+            Transform.scale(
+              scale: finalScale,
+              child: Container(
+                width: 60.w,
+                height: 60.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.isVoiceListening && widget.visualFeedbackEnabled
+                      ? Color.lerp(
+                          _colorAnimation.value,
+                          AppTheme.lightTheme.colorScheme.primary,
+                          0.8,
+                        )
+                      : _colorAnimation.value,
+                  boxShadow: [
+                    BoxShadow(
+                      color: widget.isVoiceListening
+                          ? AppTheme.lightTheme.colorScheme.primary.withValues(
+                              alpha: 0.3, // Reduced opacity
+                            )
+                          : AppTheme.lightTheme.colorScheme.shadow.withValues(
+                              alpha: 0.2, // Reduced opacity
+                            ),
+                      blurRadius: widget.isVoiceListening ? 15 : 10, // Reduced blur
+                      offset: Offset(0, 5), // Reduced offset
+                      spreadRadius: widget.isVoiceListening ? 1 : 0, // Reduced spread
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Counter Display
+                    Text(
+                      _formatNumber(widget.count),
+                      style: GoogleFonts.inter(
+                        fontSize: 26.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+
+                    // Progress percentage display - restored feature
+                    if (widget.selectedPhrase.isNotEmpty) ...[
+                      SizedBox(height: 0.5.h),
+                      Builder(
+                        builder: (context) {
+                          final dailyGoal =
+                              widget.selectedPhrase['dailyGoal'] as int? ?? 33;
+                          final percentage = dailyGoal > 0
+                              ? ((widget.count / dailyGoal) * 100)
+                                    .clamp(0.0, 100.0)
+                                    .toInt()
+                              : 0;
+
+                          return Text(
+                            '$percentage%',
+                            style: GoogleFonts.inter(
+                              fontSize: 16.sp,
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+
+                    SizedBox(height: 1.h),
+
+                    // Current phrase indicator
+                    if (widget.selectedPhrase.isNotEmpty)
+                      Text(
+                        widget.selectedPhrase['transliteration'] ?? '',
+                        style: GoogleFonts.inter(
+                          fontSize: 14.sp,
+                          color: Colors.white.withValues(alpha: 0.8),
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+
+                    // Voice listening indicator
+                    if (widget.isVoiceListening &&
+                        widget.visualFeedbackEnabled) ...[
+                      SizedBox(height: 0.5.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.mic,
+                            size: 12.sp,
+                            color: Colors.white.withValues(alpha: 0.8),
+                          ),
+                          SizedBox(width: 1.w),
+                          Text(
+                            'Listening',
+                            style: GoogleFonts.inter(
+                              fontSize: 8.sp,
+                              color: Colors.white.withValues(alpha: 0.8),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
   }
 }
-
 
 
 // import 'package:flutter/material.dart';
@@ -469,12 +445,11 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //   int _lastCount = 0;
 //   bool _wasListening = false;
 
-//   // Animation constraints to prevent excessive scaling
-//   static const double _maxIncrementScale = 0.05; // Reduced from 1.15
-//   static const double _maxListeningScale = 0.2; // Reduced from 1.08
-//   static const double _maxVolumeScale = 0.01; // Reduced from 0.1
-//   static const double _maxSuccessScale = 0.1; // Reduced from 0.3
-//   static const double _maxRingScale = 0.03; // New constraint for rings
+//   static const double _maxIncrementScale = 1.05;
+//   static const double _maxListeningScale = 2.22;
+//   static const double _maxVolumeScale = 0.03;
+//   static const double _maxSuccessScale = 0.1;
+//   static const double _maxRingScale = 0.1; // Reduced from 0.05
 
 //   @override
 //   void initState() {
@@ -483,22 +458,22 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //     _wasListening = widget.isVoiceListening;
 
 //     _incrementAnimationController = AnimationController(
-//       duration: Duration(milliseconds: 200), // Faster animation
+//       duration: Duration(milliseconds: 200),
 //       vsync: this,
 //     );
 
 //     _listeningAnimationController = AnimationController(
-//       duration: Duration(milliseconds: 3000), // Slower for smoothness
+//       duration: Duration(milliseconds: 3000),
 //       vsync: this,
 //     );
 
 //     _volumeAnimationController = AnimationController(
-//       duration: Duration(milliseconds: 150), // Slightly slower
+//       duration: Duration(milliseconds: 150),
 //       vsync: this,
 //     );
 
 //     _successAnimationController = AnimationController(
-//       duration: Duration(milliseconds: 400), // Faster success animation
+//       duration: Duration(milliseconds: 400),
 //       vsync: this,
 //     );
 
@@ -508,7 +483,7 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //     ).animate(
 //       CurvedAnimation(
 //         parent: _incrementAnimationController,
-//         curve: Curves.easeOut, // Smoother curve
+//         curve: Curves.easeOut,
 //       ),
 //     );
 
@@ -542,7 +517,7 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //     _successAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
 //       CurvedAnimation(
 //         parent: _successAnimationController,
-//         curve: Curves.easeOut, // Smoother success animation
+//         curve: Curves.easeOut,
 //       ),
 //     );
 
@@ -555,17 +530,11 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //   void didUpdateWidget(EnhancedDhikrCounterWidget oldWidget) {
 //     super.didUpdateWidget(oldWidget);
 
-//     // Handle count changes with enhanced feedback
 //     if (oldWidget.count != widget.count) {
-//       debugPrint('=== ENHANCED COUNTER WIDGET UPDATE ===');
-//       debugPrint('Counter updated from ${oldWidget.count} to ${widget.count}');
-
-//       // Trigger increment animation
 //       _incrementAnimationController.forward().then((_) {
 //         _incrementAnimationController.reverse();
 //       });
 
-//       // Trigger success animation for voice detection
 //       if (widget.isVoiceListening && widget.onPhraseDetected != null) {
 //         _triggerSuccessAnimation();
 //       }
@@ -573,7 +542,6 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //       _lastCount = widget.count;
 //     }
 
-//     // Handle listening state changes
 //     if (oldWidget.isVoiceListening != widget.isVoiceListening) {
 //       if (widget.isVoiceListening) {
 //         _listeningAnimationController.repeat(reverse: true);
@@ -584,7 +552,6 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //       _wasListening = widget.isVoiceListening;
 //     }
 
-//     // Handle volume changes for sound sensitivity
 //     if (oldWidget.voiceVolume != widget.voiceVolume &&
 //         widget.isVoiceListening) {
 //       if (widget.voiceVolume > 0.3) {
@@ -607,12 +574,10 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //   void _triggerSuccessAnimation() {
 //     if (!mounted) return;
 
-//     // Haptic feedback if enabled
 //     if (widget.hapticFeedbackEnabled) {
 //       HapticFeedback.mediumImpact();
 //     }
 
-//     // Visual feedback if enabled
 //     if (widget.visualFeedbackEnabled) {
 //       _successAnimationController.forward().then((_) {
 //         if (mounted) {
@@ -658,32 +623,30 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                 : 1.0;
 //         final finalScale = baseScale * listeningScale * volumeScale;
 
-//         return Container(
-//           // Fixed container to prevent overflow
+//         return SizedBox(
 //           width: 65.w,
 //           height: 65.w,
 //           child: Stack(
 //             alignment: Alignment.center,
 //             children: [
-//               // Listening outer rings (sound sensitivity indicator) - much more controlled
+//               // Reduced listening outer ring
 //               if (widget.isVoiceListening && widget.visualFeedbackEnabled)
-//                 ...List.generate(2, (index) {
-//                   // Reduced from 3 to 2 rings
+//                 ...List.generate(1, (index) {
 //                   final ringScale =
 //                       1.0 +
-//                       (index + 1) *
-//                           _maxRingScale + // Much smaller ring expansion
+//                       (index + 1) * _maxRingScale +
 //                       (_volumeAnimation.value *
 //                           widget.voiceVolume *
 //                           _maxRingScale);
+
 //                   final opacity =
 //                       (1.0 - (index * 0.4)) *
-//                       (0.2 +
+//                       (0.1 +
 //                           _volumeAnimation.value *
 //                               widget.voiceVolume *
-//                               0.3); // Reduced opacity
+//                               0.25); // Lower opacity
 
-//                   return Container(
+//                   return SizedBox(
 //                     width: 60.w,
 //                     height: 60.w,
 //                     child: Transform.scale(
@@ -695,8 +658,8 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                           shape: BoxShape.circle,
 //                           border: Border.all(
 //                             color: AppTheme.lightTheme.colorScheme.primary
-//                                 .withValues(alpha: opacity),
-//                             width: 1, // Reduced border width
+//                                 .withOpacity(opacity.clamp(0.0, 1.0)),
+//                             width: 0.5, // Reduced thickness
 //                           ),
 //                         ),
 //                       ),
@@ -704,9 +667,9 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                   );
 //                 }),
 
-//               // Success indicator overlay - more controlled
+//               // Success visual
 //               if (_successAnimation.value > 0.0 && widget.visualFeedbackEnabled)
-//                 Container(
+//                 SizedBox(
 //                   width: 60.w,
 //                   height: 60.w,
 //                   child: Transform.scale(
@@ -717,18 +680,18 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                       decoration: BoxDecoration(
 //                         shape: BoxShape.circle,
 //                         border: Border.all(
-//                           color: Colors.green.withValues(
-//                             alpha: _successAnimation.value * 0.6,
+//                           color: Colors.green.withOpacity(
+//                             (_successAnimation.value * 0.6).clamp(0.0, 1.0),
 //                           ),
-//                           width: 2, // Reduced border width
+//                           width: 2,
 //                         ),
 //                       ),
 //                       child: Center(
 //                         child: Icon(
 //                           Icons.check_circle,
-//                           size: 15.w, // Reduced icon size
-//                           color: Colors.green.withValues(
-//                             alpha: _successAnimation.value * 0.8,
+//                           size: 15.w,
+//                           color: Colors.green.withOpacity(
+//                             (_successAnimation.value * 0.8).clamp(0.0, 1.0),
 //                           ),
 //                         ),
 //                       ),
@@ -736,12 +699,9 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                   ),
 //                 ),
 
-//               // Main counter circle - controlled scaling
+//               // Main counter
 //               Transform.scale(
-//                 scale: finalScale.clamp(
-//                   0.95,
-//                   1.08,
-//                 ), // Clamp to prevent excessive scaling
+//                 scale: finalScale.clamp(0.95, 1.08),
 //                 child: Container(
 //                   width: 60.w,
 //                   height: 60.w,
@@ -760,22 +720,18 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                         color:
 //                             widget.isVoiceListening
 //                                 ? AppTheme.lightTheme.colorScheme.primary
-//                                     .withValues(
-//                                       alpha: 0.3, // Reduced shadow opacity
-//                                     )
+//                                     .withOpacity(0.7)
 //                                 : AppTheme.lightTheme.colorScheme.shadow
-//                                     .withValues(alpha: 0.2),
-//                         blurRadius:
-//                             widget.isVoiceListening ? 12 : 8, // Reduced blur
-//                         offset: Offset(0, 4), // Reduced offset
-//                         spreadRadius: 0, // No spread to prevent growth
+//                                     .withOpacity(0.2),
+//                         blurRadius: widget.isVoiceListening ? 12 : 8,
+//                         offset: Offset(0, 4),
+//                         spreadRadius: 0,
 //                       ),
 //                     ],
 //                   ),
 //                   child: Column(
 //                     mainAxisAlignment: MainAxisAlignment.center,
 //                     children: [
-//                       // Counter Display
 //                       Text(
 //                         _formatNumber(widget.count),
 //                         style: GoogleFonts.inter(
@@ -784,8 +740,6 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                           color: Colors.white,
 //                         ),
 //                       ),
-
-//                       // Progress percentage display - restored feature
 //                       if (widget.selectedPhrase.isNotEmpty) ...[
 //                         SizedBox(height: 0.5.h),
 //                         Builder(
@@ -804,29 +758,24 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                               '$percentage%',
 //                               style: GoogleFonts.inter(
 //                                 fontSize: 16.sp,
-//                                 color: Colors.white.withValues(alpha: 0.9),
+//                                 color: Colors.white.withOpacity(0.9),
 //                                 fontWeight: FontWeight.w600,
 //                               ),
 //                             );
 //                           },
 //                         ),
 //                       ],
-
 //                       SizedBox(height: 1.h),
-
-//                       // Current phrase indicator
 //                       if (widget.selectedPhrase.isNotEmpty)
 //                         Text(
 //                           widget.selectedPhrase['transliteration'] ?? '',
 //                           style: GoogleFonts.inter(
 //                             fontSize: 14.sp,
-//                             color: Colors.white.withValues(alpha: 0.8),
+//                             color: Colors.white.withOpacity(0.8),
 //                             fontWeight: FontWeight.w500,
 //                           ),
 //                           textAlign: TextAlign.center,
 //                         ),
-
-//                       // Voice listening indicator
 //                       if (widget.isVoiceListening &&
 //                           widget.visualFeedbackEnabled) ...[
 //                         SizedBox(height: 0.5.h),
@@ -837,14 +786,14 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //                             Icon(
 //                               Icons.mic,
 //                               size: 12.sp,
-//                               color: Colors.white.withValues(alpha: 0.8),
+//                               color: Colors.white.withOpacity(0.8),
 //                             ),
 //                             SizedBox(width: 1.w),
 //                             Text(
 //                               'Listening',
 //                               style: GoogleFonts.inter(
 //                                 fontSize: 8.sp,
-//                                 color: Colors.white.withValues(alpha: 0.8),
+//                                 color: Colors.white.withOpacity(0.8),
 //                                 fontWeight: FontWeight.w400,
 //                               ),
 //                             ),
@@ -862,6 +811,8 @@ class _EnhancedDhikrCounterWidgetState extends State<EnhancedDhikrCounterWidget>
 //     );
 //   }
 // }
+
+
 
 
 

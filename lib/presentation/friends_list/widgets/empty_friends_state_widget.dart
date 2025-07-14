@@ -12,7 +12,7 @@ class EmptyFriendsStateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(8.w),
+        padding: EdgeInsets.symmetric(horizontal:  8.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -54,54 +54,54 @@ class EmptyFriendsStateWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 4.h),
-            // Benefits
-            _buildBenefitItem('Share daily Dhikr progress', 'trending_up'),
-            SizedBox(height: 2.h),
-            _buildBenefitItem('Send Islamic encouragement', 'favorite'),
-            SizedBox(height: 2.h),
-            _buildBenefitItem('Join spiritual challenges', 'emoji_events'),
-            SizedBox(height: 6.h),
-            // Action buttons
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: onInviteFriends,
-                icon: CustomIconWidget(
-                  iconName: 'person_add',
-                  color: AppTheme
-                      .lightTheme.floatingActionButtonTheme.foregroundColor!,
-                  size: 20,
-                ),
-                label: const Text('Invite Friends'),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 2.h),
-                ),
-              ),
-            ),
-            SizedBox(height: 2.h),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  // Share app functionality
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Share link copied to clipboard!'),
-                    ),
-                  );
-                },
-                icon: CustomIconWidget(
-                  iconName: 'share',
-                  color: AppTheme.lightTheme.colorScheme.primary,
-                  size: 20,
-                ),
-                label: const Text('Share Dhikr Share App'),
-                style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 2.h),
-                ),
-              ),
-            ),
-            SizedBox(height: 4.h),
+            // // Benefits
+            // _buildBenefitItem('Share daily Dhikr progress', 'trending_up'),
+            // SizedBox(height: 2.h),
+            // _buildBenefitItem('Send Islamic encouragement', 'favorite'),
+            // SizedBox(height: 2.h),
+            // _buildBenefitItem('Join spiritual challenges', 'emoji_events'),
+            // SizedBox(height: 6.h),
+            // // Action buttons
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: ElevatedButton.icon(
+            //     onPressed: onInviteFriends,
+            //     icon: CustomIconWidget(
+            //       iconName: 'person_add',
+            //       color: AppTheme
+            //           .lightTheme.floatingActionButtonTheme.foregroundColor!,
+            //       size: 20,
+            //     ),
+            //     label: const Text('Invite Friends'),
+            //     style: ElevatedButton.styleFrom(
+            //       padding: EdgeInsets.symmetric(vertical: 2.h),
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(height: 2.h),
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: OutlinedButton.icon(
+            //     onPressed: () {
+            //       // Share app functionality
+            //       ScaffoldMessenger.of(context).showSnackBar(
+            //         const SnackBar(
+            //           content: Text('Share link copied to clipboard!'),
+            //         ),
+            //       );
+            //     },
+            //     icon: CustomIconWidget(
+            //       iconName: 'share',
+            //       color: AppTheme.lightTheme.colorScheme.primary,
+            //       size: 20,
+            //     ),
+            //     label: const Text('Share Dhikr Share App'),
+            //     style: OutlinedButton.styleFrom(
+            //       padding: EdgeInsets.symmetric(vertical: 2.h),
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(height: 4.h),
             // Islamic quote
             Container(
               padding: EdgeInsets.all(4.w),

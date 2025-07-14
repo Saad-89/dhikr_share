@@ -70,7 +70,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   onPressed: authVM.isLoading ? null : _submit,
                   child:
                       authVM.isLoading
-                          ? Container(
+                          ? SizedBox(
                             height: 30,
                             width: 25,
                             child: const CircularProgressIndicator(

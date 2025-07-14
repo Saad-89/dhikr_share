@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import '../../../core/app_export.dart';
 
@@ -19,6 +21,13 @@ class FriendCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Timestamp? timestamp = friend['lastActive'];
+String lastActiveText = 'Last active: Unknown';
+
+if (timestamp != null) {
+  final DateTime lastActiveDate = timestamp.toDate();
+  lastActiveText = 'Last active: ${timeago.format(lastActiveDate)}';
+}
     return Dismissible(
       key: Key('friend_${friend['id']}'),
       background: _buildSwipeBackground(context, isLeft: false),
@@ -89,7 +98,8 @@ class FriendCardWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 1.h),
                       Text(
-                        'Last active: ${friend['lastActive']}',
+                        // 'Last active: ${friend['lastActive']}',
+                     "$lastActiveText",
                         style:
                             AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
                           color:
