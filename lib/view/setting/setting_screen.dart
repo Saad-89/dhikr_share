@@ -1,12 +1,9 @@
 import 'package:dhikar_share/core/constants/app_colors.dart';
 import 'package:dhikar_share/view/setting/widgets/general_setting_widget.dart';
-import 'package:dhikar_share/view/setting/widgets/hanafi_calculation_toggle_widget.dart';
-import 'package:dhikar_share/view/setting/widgets/prayer_times_widget.dart';
+import 'package:dhikar_share/view/setting/widgets/prayer_widget.dart';
 import 'package:dhikar_share/view/setting/widgets/setting_section_widget.dart';
 import 'package:dhikar_share/view/setting/widgets/setting_toggle_section_setting.dart';
 import 'package:dhikar_share/view/setting/widgets/settings_item_widget.dart';
-import 'package:dhikar_share/view/setting/widgets/settings_selection_widget.dart';
-import 'package:dhikar_share/view/setting/widgets/settings_toggle_widget.dart';
 import 'package:dhikar_share/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
@@ -83,20 +80,42 @@ class _SettingScreenState extends State<SettingScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                AppText(
-                  text: 'Voice Recognition & Feedback',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.black,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 12,
+                  ),
+                  child: AppText(
+                    text: 'Voice Recognition & Feedback',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.black,
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 3),
 
             SettingsToggleSection(onToggleChanged: _onToggleChanged),
-            SizedBox(height: 3),
 
             // General Settings
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 12,
+                  ),
+                  child: AppText(
+                    text: 'General Settings',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.black,
+                  ),
+                ),
+              ],
+            ),
+
             SettingsWidget(),
 
             // SettingsSectionWidget(
@@ -127,32 +146,74 @@ class _SettingScreenState extends State<SettingScreen> {
             //     ),
             //   ],
             // ),
-            SizedBox(height: 3),
-
-            // Prayer Times Settings
-            SettingsSectionWidget(
-              title: 'Prayer Times',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SettingsToggleWidget(
-                  leadingIcon: 'access_time',
-                  title: 'Prayer Times',
-                  subtitle: 'Show prayer times in the app',
-                  value: true,
-                  onChanged: (_) {},
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 12,
+                  ),
+                  child: AppText(
+                    text: 'Prayer Times',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.black,
+                  ),
                 ),
-                HanafiCalculationToggleWidget(),
-                PrayerTimesWidget(),
               ],
             ),
 
-            SizedBox(height: 3),
+            // Prayer Times Settings
+            // SettingsSectionWidget(
+            //   title: 'Prayer Times',
+            //   children: [
+            //     SettingsToggleWidget(
+            //       leadingIcon: 'access_time',
+            //       title: 'Prayer Times',
+            //       subtitle: 'Show prayer times in the app',
+            //       value: true,
+            //       onChanged: (_) {},
+            //     ),
+            //     HanafiCalculationToggleWidget(),
+            //     PrayerTimesWidget(),
+            //   ],
+            // ),
+            PrayerSettingsWidget(
+              isPrayerTimesEnabled: true,
+              isHanafiCalculationEnabled: false,
+              currentLocation: 'Lahore',
+              prayerTimes: {
+                'Fajr': '4:15 AM',
+                'Sunrise': '5:45 AM',
+                'Dhuhr': '12:30 PM',
+                'Asr': '4:00 PM',
+                'Maghrib': '7:15 PM',
+                'Isha': '8:45 PM',
+              },
+              onPrayerTimesToggle: (isEnabled) {
+                print('Prayer times toggled: $isEnabled');
+                // Handle prayer times toggle
+                // Save to preferences, update state, etc.
+              },
+              onHanafiToggle: (isEnabled) {
+                print('Hanafi calculation toggled: $isEnabled');
+                // Handle Hanafi calculation toggle
+                // Recalculate prayer times if needed
+              },
+              onRefreshTimes: () {
+                print('Refresh prayer times');
+                // Handle refresh action
+                // Fetch new prayer times from API or recalculate
+              },
+            ),
 
             // Account Settings
             SettingsSectionWidget(
               title: 'Account',
               children: [
                 SettingsItemWidget(
-                  leadingIcon: 'backup',
+                  leadingIcon: Icons.backup,
                   title: 'Backup Data',
                   subtitle: 'Backup your dhikr progress to cloud',
                   onTap: () {
@@ -164,7 +225,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                 ),
                 SettingsItemWidget(
-                  leadingIcon: 'download',
+                  leadingIcon: Icons.download,
                   title: 'Export Data',
                   subtitle: 'Export your data to external storage',
                   onTap: () {
@@ -176,7 +237,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                 ),
                 SettingsItemWidget(
-                  leadingIcon: 'logout',
+                  leadingIcon: Icons.logout,
                   title: 'Logout',
                   subtitle: 'Sign out of your account',
                   onTap: () {
@@ -186,26 +247,24 @@ class _SettingScreenState extends State<SettingScreen> {
               ],
             ),
 
-            SizedBox(height: 3),
-
             // About Section
             SettingsSectionWidget(
               title: 'About',
               children: [
                 SettingsItemWidget(
-                  leadingIcon: 'privacy_tip',
+                  leadingIcon: Icons.privacy_tip,
                   title: 'Privacy Policy',
                   subtitle: 'Read our privacy policy',
                   onTap: () {},
                 ),
                 SettingsItemWidget(
-                  leadingIcon: 'description',
+                  leadingIcon: Icons.description,
                   title: 'Terms of Service',
                   subtitle: 'Read our terms of service',
                   onTap: () {},
                 ),
                 SettingsItemWidget(
-                  leadingIcon: 'info',
+                  leadingIcon: Icons.info,
                   title: 'App Version',
                   subtitle: '1.0.0',
                   onTap: null,
@@ -220,21 +279,3 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-
-// class SettingScreen extends StatelessWidget {
-//   const SettingScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Scaffold(
-//       body: Center(
-//         child: Text(
-//           "Setting Screen",
-//           style: TextStyle(color: Colors.black, fontSize: 20),
-//         ),
-//       ),
-//     );
-//   }
-// }

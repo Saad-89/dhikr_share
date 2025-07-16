@@ -2,44 +2,6 @@ import 'package:dhikar_share/core/constants/app_colors.dart';
 import 'package:dhikar_share/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
-// USAGE EXAMPLES:
-
-// 1. In a full screen page:
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            SettingsWidget(),
-            // You can add more settings sections here
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// 2. In a dialog:
-void showSettingsDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) => Dialog(child: const SettingsWidget()),
-  );
-}
-
-// 3. In a bottom sheet:
-void showSettingsBottomSheet(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    builder: (context) => const SettingsWidget(),
-  );
-}
-
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({Key? key}) : super(key: key);
 
@@ -75,14 +37,17 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             iconColor: AppColors.primaryDarkGreen,
             title: 'Notifications',
             subtitle: 'Enable prayer time and dhikr reminders',
-            trailing: Switch(
-              value: notificationsEnabled,
-              onChanged: (value) {
-                setState(() {
-                  notificationsEnabled = value;
-                });
-              },
-              activeColor: AppColors.primaryDarkGreen,
+            trailing: Transform.scale(
+              scale: 0.8,
+              child: Switch(
+                value: notificationsEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    notificationsEnabled = value;
+                  });
+                },
+                activeColor: AppColors.primaryDarkGreen,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -92,7 +57,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             title: 'Theme',
             subtitle: 'Choose your preferred app theme',
             trailing: const Icon(
-              Icons.arrow_forward_ios,
+              Icons.arrow_forward,
               size: 16,
               color: Colors.grey,
             ),
@@ -108,7 +73,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             title: 'Language',
             subtitle: 'Select your preferred language',
             trailing: const Icon(
-              Icons.arrow_forward_ios,
+              Icons.arrow_forward,
               size: 16,
               color: Colors.grey,
             ),
@@ -138,9 +103,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                color: iconColor.withOpacity(0.1),
+                color: Color(0xFFE8F5E8),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: iconColor, size: 20),
@@ -152,13 +118,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 children: [
                   AppText(
                     text: title,
-
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: Colors.black87,
                   ),
                   const SizedBox(height: 4),
                   AppText(
+                    textAlign: TextAlign.start,
                     text: subtitle,
 
                     fontSize: 14,

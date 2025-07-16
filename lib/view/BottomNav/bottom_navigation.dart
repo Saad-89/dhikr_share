@@ -1,6 +1,6 @@
 import 'package:dhikar_share/core/constants/app_colors.dart';
-import 'package:dhikar_share/view/analytics_dashboard/analytic_dashboard.dart';
-import 'package:dhikar_share/view/challenges/challenges_screen.dart';
+import 'package:dhikar_share/view/analytics_dashboard/analytics_dashboard.dart';
+import 'package:dhikar_share/view/challenge_mode/challenge_mode.dart';
 import 'package:dhikar_share/view/dashboard/main_dashboard_screen.dart';
 import 'package:dhikar_share/view/friends/friend_list.dart';
 import 'package:dhikar_share/view/setting/setting_screen.dart';
@@ -20,7 +20,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     MainDashboardScreen(),
     FriendsList(),
     AnalyticsDashboard(),
-    ChallengesScreen(),
+    ChallengeMode(),
     SettingScreen(),
   ];
 

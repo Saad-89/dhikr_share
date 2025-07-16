@@ -27,37 +27,19 @@ class SettingsSectionWidget extends StatelessWidget {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: AppColors.grey,
-                blurRadius: 8,
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: Column(
-            children: children.asMap().entries.map((entry) {
-              final index = entry.key;
-              final child = entry.value;
-
-              return Column(
-                children: [
-                  child,
-                  if (index < children.length - 1)
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      indent: 64, // replaced 16.w
-                      color: AppColors.black54,
-                    ),
-                ],
-              );
-            }).toList(),
-          ),
+          child: Column(children: children),
         ),
       ],
     );

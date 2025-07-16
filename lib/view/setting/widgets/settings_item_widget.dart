@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class SettingsItemWidget extends StatelessWidget {
   final String title;
   final String? subtitle;
-  final String leadingIcon;
+  final IconData leadingIcon;
   final Widget? trailing;
   final VoidCallback? onTap;
   final Color? textColor;
@@ -33,13 +33,13 @@ class SettingsItemWidget extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primaryGreen.withOpacity(0.1),
+                color: Color(0xFFE8F5E8),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: Icon(
-                  Icons.leaderboard,
-                  color: textColor ?? AppColors.primaryGreen,
+                  leadingIcon,
+                  color: textColor ?? AppColors.primaryDarkGreen,
                   size: 20,
                 ),
               ),
@@ -52,13 +52,16 @@ class SettingsItemWidget extends StatelessWidget {
                   AppText(
                     text: title,
                     fontSize: 16,
+                    textAlign: TextAlign.start,
                     fontWeight: FontWeight.w500,
-                    color: textColor ?? AppColors.primaryGreen,
+                    color: textColor ?? AppColors.black,
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: 4),
                     AppText(
                       text: subtitle!,
+                      textAlign: TextAlign.start,
+
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
                       color: AppColors.black54,
@@ -70,7 +73,7 @@ class SettingsItemWidget extends StatelessWidget {
             trailing ??
                 (onTap != null
                     ? Icon(
-                        Icons.chevron_right,
+                        Icons.arrow_forward,
                         color: AppColors.black54,
                         size: 20,
                       )
