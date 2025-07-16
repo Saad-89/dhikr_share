@@ -22,6 +22,15 @@ class _AllowAccessScreenState extends State<AllowAccessScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background, // Set your app's background color
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios_rounded),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),

@@ -13,30 +13,43 @@ class AddFriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => IntentionReminderScreen(),
-                      ),
-                    );
-                  },
-                  child: AppText(
-                    text: "Skip →",
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    color: AppColors.black54,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back_ios_rounded),
                   ),
-                ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => IntentionReminderScreen(),
+                          ),
+                        );
+                      },
+                      child: AppText(
+                        text: "Skip →",
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: AppColors.black54,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               const Center(

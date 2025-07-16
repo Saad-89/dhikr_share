@@ -1,5 +1,6 @@
 import 'package:dhikar_share/core/constants/app_colors.dart';
 import 'package:dhikar_share/view/auth/sign_in/sign_in.dart';
+import 'package:dhikar_share/view/auth/sing_up/otp_screen.dart';
 import 'package:dhikar_share/view/onBoarding/Dhkir_goal/set_goal_screen.dart';
 import 'package:dhikar_share/widgets/app_button.dart';
 import 'package:dhikar_share/widgets/app_text.dart';
@@ -61,7 +62,10 @@ class SignupScreen extends StatelessWidget {
                   // Navigate or show setup logic
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SetGoalScreen()),
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          OTPScreen(phoneNumber: "+1 (416) 555-1212"),
+                    ),
                   );
                 },
               ),
