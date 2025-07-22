@@ -1,4 +1,4 @@
-package com.example.dhikar_share
+package com.techorphic.dhikr_share
 
 import io.flutter.embedding.android.FlutterActivity
 
